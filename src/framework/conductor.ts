@@ -1,20 +1,27 @@
-import { BaseMessage } from '@langchain/core/messages';
+import { BaseMessage, HumanMessage, ToolMessage } from '@langchain/core/messages';
 import { ConversationSerializer } from './state/baseConversationSerializer';
 import { Conversation, ConversationSteps } from './state/conversation';
 import { Operator } from './operators';
 import { AI_MODELS } from '@/models/enums';
 import { getAIModel } from '@/utils/aiHelpers';
+import { addUserInputTool } from './tools/addUserInputTool';
 
 interface ConductorRetryPlan {
 	numOfRetries: number;
 	retryDelay: number;
 }
+
+interface ConductorHooks {
+	onConversationStopped?: (conversation: Conversation) => void;
+}
+
 interface ConductorConfig {
 	stateSerializer: ConversationSerializer;
 	operator?: Operator;
 	defaultModel?: AI_MODELS | undefined;
 	conversationId?: string;
 	retryPlan?: ConductorRetryPlan;
+	hooks?: ConductorHooks | undefined;
 }
 
 class Conductor {
@@ -24,6 +31,7 @@ class Conductor {
 	operator: Operator | undefined;
 	defaultModel: AI_MODELS | undefined;
 	retryPlan: ConductorRetryPlan | undefined;
+	hooks: ConductorHooks | undefined;
 
 	constructor(config: ConductorConfig) {
 		this.stateSerializer = config.stateSerializer;
@@ -31,9 +39,10 @@ class Conductor {
 		this.operator = config.operator;
 		this.defaultModel = config.defaultModel;
 		this.retryPlan = config.retryPlan || { numOfRetries: 3, retryDelay: 10 };
+		this.hooks = config.hooks;
 	}
 
-	private async loadConversation() {
+	async loadConversation() {
 		if (!this.conversationId) {
 			throw new Error('Conversation has not started');
 		}
@@ -49,6 +58,7 @@ class Conductor {
 	}
 
 	private async executeNextStep() {
+		console.log('Executing next step: ', this.conversation!.currentStep);
 		switch (this.conversation!.currentStep) {
 			case ConversationSteps.WaitingForLLMResponse:
 			case ConversationSteps.ToolsResponseReceived:
@@ -99,6 +109,12 @@ class Conductor {
 
 				console.log('***** ', this.conversation!.currentStep);
 				return toolResponse;
+			case ConversationSteps.Stopped:
+				console.log('Conversation stopped');
+				if (this.hooks?.onConversationStopped) {
+					this.hooks.onConversationStopped(this.conversation!);
+				}
+				break;
 			default:
 				console.log('No more steps to run');
 				break;
@@ -135,6 +151,14 @@ class Conductor {
 		return this.conversation;
 	}
 
+	async addUserInputToConversation(input: string, toolCallId: string) {
+		await this.loadConversation();
+
+		const toolAnswerMessage = new ToolMessage({ content: input, tool_call_id: toolCallId, status: 'success' });
+		this.conversation!.addMessages([toolAnswerMessage]);
+		await this.stateSerializer.save(this.conversation!);
+	}
+
 	async runNextStep() {
 		await this.loadConversation();
 
@@ -164,6 +188,8 @@ class Conductor {
 	}
 
 	async conduct() {
+		await this.loadConversation();
+
 		const conversationNumberOfSteps = this.conversation!.messages.length;
 
 		while (
@@ -184,6 +210,12 @@ class Conductor {
 		await this.loadConversation();
 
 		return this.conversation;
+	}
+
+	async getCurrentStep() {
+		await this.loadConversation();
+
+		return this.conversation!.currentStep;
 	}
 
 	// continueWithTask(task: Task) {

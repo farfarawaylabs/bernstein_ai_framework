@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { StructuredToolParams, tool } from '@langchain/core/tools';
 import { askQuestion } from '@/services/perplexity';
-import { createTool } from './baseTool';
 
 const aksPerplexityToolSchema: StructuredToolParams = {
 	name: 'aks_question_from_web',
@@ -12,22 +11,10 @@ const aksPerplexityToolSchema: StructuredToolParams = {
 	}),
 };
 
-const aksPerplexityTool = () => {
-	return createTool(
-		async (input: any) => {
-			const { question } = input;
-			const result = await askQuestion(question);
-			return result;
-		},
-		aksPerplexityToolSchema,
-		true
-	);
-};
-
-// const aksPerplexityTool = tool(async (input: any) => {
-// 	const { question } = input;
-// 	const result = await askQuestion(question);
-// 	return result;
-// }, aksPerplexityToolSchema);
+const aksPerplexityTool = tool(async (input: any) => {
+	const { question } = input;
+	const result = await askQuestion(question);
+	return result;
+}, aksPerplexityToolSchema);
 
 export { aksPerplexityTool };

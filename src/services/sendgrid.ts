@@ -36,6 +36,8 @@ export const sendEmail = async (email: EmailMessage) => {
 		attachments: email.attachments,
 	};
 
+	console.log('Sending email: ', Environment.SENDGRID_API_KEY);
+	console.log(JSON.stringify(message, null, 2));
 	try {
 		const result = await fetch('https://api.sendgrid.com/v3/mail/send', {
 			method: 'POST',
@@ -46,6 +48,7 @@ export const sendEmail = async (email: EmailMessage) => {
 			body: JSON.stringify(message),
 		});
 
+		console.log(JSON.stringify(result, null, 2));
 		return true;
 	} catch (error) {
 		console.error('error sending email: ', error);

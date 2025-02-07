@@ -74,6 +74,7 @@ export class Conversation {
 
 	getLastToolCalls() {
 		const lastMessage = this.getLastMessage();
+		console.log('in getLastToolCalls lastMessage: ', lastMessage.getType(), lastMessage);
 
 		if (lastMessage.getType() !== 'ai') {
 			return [];
@@ -85,6 +86,7 @@ export class Conversation {
 			return [];
 		}
 
+		console.log('calls: ', calls);
 		return calls;
 	}
 
@@ -102,6 +104,7 @@ export class Conversation {
 			startTime: conversation.startTime,
 			endTime: conversation.endTime,
 			messages: serializeMessages(conversation.messages),
+			currentStep: conversation.currentStep,
 		};
 	}
 

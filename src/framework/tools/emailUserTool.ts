@@ -3,8 +3,8 @@ import { StructuredToolParams, tool } from '@langchain/core/tools';
 import { sendEmail } from '@/services/sendgrid';
 
 const askUserToolSchema: StructuredToolParams = {
-	name: 'ask_user',
-	description: 'Ask the user for input',
+	name: 'ask_user_input',
+	description: 'Use this tool to ask the user for input',
 	schema: z.object({
 		question: z.string().describe('The question to ask the user'),
 	}),
@@ -21,7 +21,7 @@ const askUserTool = tool(async (input: any) => {
 	});
 }, askUserToolSchema);
 
-const createAskUserTook = (from: string, fromName: string, recipients: string[], subject: string) => {
+const createAskUserInputTool = (from: string, fromName: string, recipients: string[], subject: string) => {
 	return tool(async (input: any) => {
 		const { question } = input;
 		const result = await sendEmail({
@@ -30,10 +30,14 @@ const createAskUserTook = (from: string, fromName: string, recipients: string[],
 			recipients,
 			subject,
 			text: question,
+			html: `<p>${question}</p>`,
 		});
 
-		return result;
+		console.log(`Email sent to ${recipients.join(', ')} from ${from} with subject ${subject}`);
+		console.log(JSON.stringify(result, null, 2));
+
+		return undefined;
 	}, askUserToolSchema);
 };
 
-export { askUserTool, createAskUserTook };
+export { askUserTool, createAskUserInputTool };

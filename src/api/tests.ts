@@ -1,13 +1,16 @@
 import { Conductor } from '@/framework/conductor';
 import { KVStoreConversationSerializer } from '@/framework/state/KVSerializer';
-import { HumanMessage } from '@langchain/core/messages';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { AI_MODELS } from '@/models/enums';
 import { Hono } from 'hono';
 import { weatherTool } from '@/framework/tools/demoTools';
 import { Operator } from '@/framework/operators';
-import { askUserTool } from '@/framework/tools/emailUserTool';
+import { askUserTool, createAskUserInputTool } from '@/framework/tools/emailUserTool';
 import { aksPerplexityTool } from '@/framework/tools/aksPerpelxityTool';
 import BlogPostWriter from '@/agents/writers/blogPostWriter';
+import { ConversationSteps } from '@/framework/state/conversation';
+import { cacheConversationIdForEmail } from '@/utils/cacheHelpers';
+import { addUserInputTool } from '@/framework/tools/addUserInputTool';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -17,6 +20,44 @@ app.post('/writeBlogPost', async (c) => {
 	const response = await blogPostWriter.run();
 	//return c.json({ response: 'test' });
 	return c.json({ response, conversation: blogPostWriter.getConductor()?.getConversation() });
+});
+
+app.post('/withUserInput', async (c) => {
+	const body = await c.req.json();
+	const operator = new Operator({
+		ask_user_input: createAskUserInputTool(
+			'x@bernstein.deathstarlabs.com',
+			'Bernstein AI',
+			['shahar@farfarawaylabs.com'],
+			'Bernstein AI needs your input'
+		),
+	});
+
+	const conductor = new Conductor({
+		operator: operator,
+		defaultModel: AI_MODELS.CHATGPT4O,
+		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 1),
+	});
+
+	await conductor.startConversation();
+
+	const systemMessage = new SystemMessage(
+		'You are a helpful assistant that can answer questions and help with tasks. If you need to ask the user for input, use the provided tools to do so.'
+	);
+	const firstMessage = new HumanMessage(body.prompt);
+
+	await conductor.addMessages([systemMessage, firstMessage]);
+
+	const response = await conductor.conduct();
+
+	const currentStep = await conductor.getCurrentStep();
+	console.log('currentStep is now: ', currentStep);
+	if (currentStep === ConversationSteps.WaitingForUserInput) {
+		console.log('caching conversation id for email ', conductor.conversation!.id);
+		await cacheConversationIdForEmail('shahar@farfarawaylabs.com', conductor.conversation!.id);
+	}
+
+	return c.json({ response });
 });
 
 app.post('/runPrompt', async (c) => {
