@@ -13,18 +13,17 @@ const app = new Hono<{ Bindings: Env }>();
 app.post('/incoming', async (c) => {
 	console.log('Incoming email');
 	const body = await c.req.formData();
-	body.forEach((value, key) => {
-		console.log('*****');
-		console.log(`${key}: ${value}`);
-		console.log('*****');
-	});
+	// body.forEach((value, key) => {
+	// 	console.log('*****');
+	// 	console.log(`${key}: ${value}`);
+	// 	console.log('*****');
+	// });
 
 	const from = body.get('from');
 	if (typeof from === 'string') {
 		const email = extractEmail(from);
 		if (email) {
 			const conversationId = await getConversationIdFromEmail(email);
-			console.log('conversationId: ', conversationId);
 
 			const operator = new Operator({});
 
@@ -34,17 +33,13 @@ app.post('/incoming', async (c) => {
 				stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 1),
 				conversationId: conversationId!,
 				hooks: {
-					onConversationStopped: async (conversation: Conversation) => {
-						console.log('conversation stopped: ', conversation.id);
-						console.log('conversation: ', JSON.stringify(conversation, null, 2));
-					},
+					onConversationStopped: async (conversation: Conversation) => {},
 				},
 			});
 
 			const emailBody = body.get('text');
 			await conductor.loadConversation();
 			const lastToolCall = conductor.conversation?.getLastToolCalls().find((toolCall) => toolCall.name === 'ask_user_input');
-			console.log('lastToolCall: ', lastToolCall);
 
 			conductor.addUserInputToConversation(extractUserReply(emailBody as string), lastToolCall!.id!);
 

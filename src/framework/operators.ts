@@ -39,7 +39,7 @@ class Operator {
 		}
 
 		const results = await Promise.all(promisses);
-		console.log('executeInParallel result: ', results);
+
 		return results as BaseMessage[];
 	}
 }

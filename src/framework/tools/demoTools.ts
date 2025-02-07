@@ -10,16 +10,7 @@ const simpleToolSchema: StructuredToolParams = {
 	}),
 };
 
-// const weatherTool = () => {
-// 	return createTool(async (input: any) => {
-// 		console.log('INSIDE weather tool for input ', input);
-// 		const { city, state } = input;
-// 		return `The weather in ${city}, ${state} is sunny with a temperature of 70 degrees and humidity of 50%`;
-// 	}, simpleToolSchema);
-// };
-
 const weatherTool = tool(async (input: any) => {
-	console.log('INSIDE weather tool for input ', input);
 	const { city, state } = input;
 	if (city === 'Boston') {
 		return undefined;

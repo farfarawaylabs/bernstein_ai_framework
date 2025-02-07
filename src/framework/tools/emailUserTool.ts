@@ -33,9 +33,6 @@ const createAskUserInputTool = (from: string, fromName: string, recipients: stri
 			html: `<p>${question}</p>`,
 		});
 
-		console.log(`Email sent to ${recipients.join(', ')} from ${from} with subject ${subject}`);
-		console.log(JSON.stringify(result, null, 2));
-
 		return undefined;
 	}, askUserToolSchema);
 };

@@ -28,7 +28,7 @@ export async function askQuestion(
 			],
 		}),
 	});
-	console.log(result);
+
 	const data: PerplexitySearchResult = await result.json();
 
 	const answer = data.choices[0].message.content;
@@ -74,7 +74,7 @@ export async function searchWithSchema(
 		}),
 	});
 	const data: PerplexitySearchResult = await result.json();
-	console.log(JSON.stringify(data, null, 2));
+
 	const answerString = data.choices[0].message.content.replace('```json', '').replace('```', '');
 	const answer = JSON.parse(answerString);
 	const sources = data.citations.map((citation) => ({

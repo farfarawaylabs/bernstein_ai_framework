@@ -48,7 +48,6 @@ class Conductor {
 		}
 
 		if (!this.conversation) {
-			console.log('loading conversation');
 			this.conversation = await this.stateSerializer.load(this.conversationId);
 		}
 
@@ -58,7 +57,6 @@ class Conductor {
 	}
 
 	private async executeNextStep() {
-		console.log('Executing next step: ', this.conversation!.currentStep);
 		switch (this.conversation!.currentStep) {
 			case ConversationSteps.WaitingForLLMResponse:
 			case ConversationSteps.ToolsResponseReceived:
@@ -107,10 +105,8 @@ class Conductor {
 
 				await this.stateSerializer.save(this.conversation!);
 
-				console.log('***** ', this.conversation!.currentStep);
 				return toolResponse;
 			case ConversationSteps.Stopped:
-				console.log('Conversation stopped');
 				if (this.hooks?.onConversationStopped) {
 					this.hooks.onConversationStopped(this.conversation!);
 				}
@@ -199,8 +195,6 @@ class Conductor {
 			conversationNumberOfSteps < 20
 		) {
 			await this.runNextStep();
-
-			console.log('currentStep: ', conversationNumberOfSteps, this.conversation!.currentStep);
 		}
 
 		return this.conversation;

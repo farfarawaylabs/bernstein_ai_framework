@@ -51,9 +51,8 @@ app.post('/withUserInput', async (c) => {
 	const response = await conductor.conduct();
 
 	const currentStep = await conductor.getCurrentStep();
-	console.log('currentStep is now: ', currentStep);
+
 	if (currentStep === ConversationSteps.WaitingForUserInput) {
-		console.log('caching conversation id for email ', conductor.conversation!.id);
 		await cacheConversationIdForEmail('shahar@farfarawaylabs.com', conductor.conversation!.id);
 	}
 

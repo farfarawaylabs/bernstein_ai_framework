@@ -28,14 +28,9 @@ export class Conversation {
 	}
 
 	addMessages(messages: BaseMessage[]) {
-		if (this.messages.length > 0) {
-			console.log('before adding messages ', this.messages[this.messages.length - 1].getType());
-		}
 		this.messages.push(...messages);
 
 		const lastMessage = this.messages[this.messages.length - 1];
-
-		console.log('last message ', lastMessage);
 
 		switch (lastMessage.getType()) {
 			case 'tool':
@@ -64,8 +59,6 @@ export class Conversation {
 				this.currentStep = ConversationSteps.Started;
 				break;
 		}
-
-		console.log('after adding messages ', lastMessage.getType(), this.currentStep);
 	}
 
 	getLastMessage() {
@@ -74,7 +67,6 @@ export class Conversation {
 
 	getLastToolCalls() {
 		const lastMessage = this.getLastMessage();
-		console.log('in getLastToolCalls lastMessage: ', lastMessage.getType(), lastMessage);
 
 		if (lastMessage.getType() !== 'ai') {
 			return [];
@@ -86,7 +78,6 @@ export class Conversation {
 			return [];
 		}
 
-		console.log('calls: ', calls);
 		return calls;
 	}
 

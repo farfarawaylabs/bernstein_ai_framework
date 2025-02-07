@@ -12,12 +12,11 @@ class BlogPostWriter extends BaseAgent {
 	constructor(topic: string) {
 		super();
 		this.prompt = AIPrompt.loadPrompt(writeBlogPostPrompt, [{ topic: topic }, { num_of_research_iterations: '3' }]);
-		console.log(this.prompt);
 	}
 
 	async run() {
 		const operator = new Operator({
-			aks_question_from_web: aksPerplexityTool(),
+			aks_question_from_web: aksPerplexityTool,
 		});
 
 		this.conductor = new Conductor({
