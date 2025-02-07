@@ -8,7 +8,7 @@ import { addUserInputTool } from './tools/addUserInputTool';
 
 interface ConductorRetryPlan {
 	numOfRetries: number;
-	retryDelay: number;
+	retryDelayInSeconds: number;
 }
 
 interface ConductorHooks {
@@ -38,25 +38,13 @@ class Conductor {
 		this.conversationId = config.conversationId;
 		this.operator = config.operator;
 		this.defaultModel = config.defaultModel;
-		this.retryPlan = config.retryPlan || { numOfRetries: 3, retryDelay: 10 };
+		this.retryPlan = config.retryPlan || { numOfRetries: 3, retryDelayInSeconds: 10 };
 		this.hooks = config.hooks;
 	}
 
-	async loadConversation() {
-		if (!this.conversationId) {
-			throw new Error('Conversation has not started');
-		}
-
-		if (!this.conversation) {
-			this.conversation = await this.stateSerializer.load(this.conversationId);
-		}
-
-		if (!this.conversation) {
-			throw new Error("Couldn't load conversation");
-		}
-	}
-
 	private async executeNextStep() {
+		console.log(`Conductor: Executing next step: ${this.conversation!.currentStep}`);
+
 		switch (this.conversation!.currentStep) {
 			case ConversationSteps.WaitingForLLMResponse:
 			case ConversationSteps.ToolsResponseReceived:
@@ -133,6 +121,20 @@ class Conductor {
 		await this.stateSerializer.save(this.conversation!);
 	}
 
+	async loadConversation() {
+		if (!this.conversationId) {
+			throw new Error('Conversation has not started');
+		}
+
+		if (!this.conversation) {
+			this.conversation = await this.stateSerializer.load(this.conversationId);
+		}
+
+		if (!this.conversation) {
+			throw new Error("Couldn't load conversation");
+		}
+	}
+
 	async addMessages(messages: BaseMessage[]) {
 		await this.loadConversation();
 
@@ -166,7 +168,7 @@ class Conductor {
 					console.error(error);
 					console.log(`Retry attempt ${i + 1} of ${this.retryPlan.numOfRetries}...`);
 					try {
-						await new Promise((resolve) => setTimeout(resolve, this.retryPlan!.retryDelay));
+						await new Promise((resolve) => setTimeout(resolve, this.retryPlan!.retryDelayInSeconds * 1000));
 						return await this.executeNextStep();
 					} catch (retryError) {
 						if (i === this.retryPlan.numOfRetries - 1) {
@@ -189,10 +191,11 @@ class Conductor {
 		const conversationNumberOfSteps = this.conversation!.messages.length;
 
 		while (
+			(console.log(`Conductor: Conducting... step number ${conversationNumberOfSteps}`),
 			this.conversation!.currentStep !== ConversationSteps.Stopped &&
-			this.conversation!.currentStep !== ConversationSteps.Ended &&
-			this.conversation!.currentStep !== ConversationSteps.WaitingForUserInput &&
-			conversationNumberOfSteps < 20
+				this.conversation!.currentStep !== ConversationSteps.Ended &&
+				this.conversation!.currentStep !== ConversationSteps.WaitingForUserInput &&
+				conversationNumberOfSteps < 30)
 		) {
 			await this.runNextStep();
 		}

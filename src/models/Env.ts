@@ -5,4 +5,6 @@ export interface Env {
 	BERNSTEIN_CACHE: KVNamespace;
 	PERPLEXITY_API_KEY: string;
 	SENDGRID_API_KEY: string;
+	NABUAI_API_KEY: string;
+	SERPER_DEV_API_KEY: string;
 }

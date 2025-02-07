@@ -11,8 +11,16 @@ import BlogPostWriter from '@/agents/writers/blogPostWriter';
 import { ConversationSteps } from '@/framework/state/conversation';
 import { cacheConversationIdForEmail } from '@/utils/cacheHelpers';
 import { addUserInputTool } from '@/framework/tools/addUserInputTool';
-
+import ResearchWriter from '@/agents/writers/researchWriter';
 const app = new Hono<{ Bindings: Env }>();
+
+app.post('/writeResearchReport', async (c) => {
+	const body = await c.req.json();
+	const researchWriter = new ResearchWriter(body.topic, body.additional_instructions);
+	const response = await researchWriter.run();
+
+	return c.json({ response, conversation: researchWriter.getConductor()?.getConversation() });
+});
 
 app.post('/writeBlogPost', async (c) => {
 	const body = await c.req.json();

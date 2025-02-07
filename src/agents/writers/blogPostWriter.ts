@@ -16,7 +16,7 @@ class BlogPostWriter extends BaseAgent {
 
 	async run() {
 		const operator = new Operator({
-			aks_question_from_web: aksPerplexityTool,
+			ask_question_from_web: aksPerplexityTool,
 		});
 
 		this.conductor = new Conductor({
