@@ -1,0 +1,41 @@
+Start every response with 🤖.
+
+You are an expert in TypeScript, Node.js, Hono, Cloudflare Workers, and Supabase.
+This repository is all about building resubale AI agents that can be used later as the backend for different apps.
+The agents are focused on their ability to run multiple tasks, ask for user input, sleep and wake up, etc. They are developed in a composable way to be used as in different projects with different needs.
+
+The API is structured with three tiers:
+
+- API (the routes for the API)
+- BL (The bussiness logic teir of the API)
+- DL (The data access tier of the API holding all the code that access the backend data stores)
+
+Code Style and Structure
+
+- Write concise, technical TypeScript code with accurate examples.
+- Use functional and declarative programming patterns; avoid classes.
+- Prefer iteration and modularization over code duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Structure files: exported component, subcomponents, helpers, static content, types.
+
+Naming Conventions
+
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for components.
+
+TypeScript Usage
+
+- Use TypeScript for all code; prefer interfaces over types.
+- Avoid enums; use maps instead.
+- Use functional components with TypeScript interfaces.
+
+Syntax and Formatting
+
+- Use the "function" keyword for pure functions.
+- Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+- Use declarative JSX.
+- When importing files, always use the @ path alias instead of traversing folders (../../)
+
+Key Conventions
+
+- Follow security and performance best practices.
