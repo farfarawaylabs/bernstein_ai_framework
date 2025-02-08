@@ -32,10 +32,12 @@ export async function askQuestion(
 	const data: PerplexitySearchResult = await result.json();
 
 	const answer = data.choices[0].message.content;
-	const sources = data.citations.map((citation) => ({
-		title: citation,
-		url: citation,
-	}));
+	const sources = data.citations
+		? data.citations.map((citation) => ({
+				title: citation,
+				url: citation,
+		  }))
+		: [];
 
 	return { answer, sources };
 }

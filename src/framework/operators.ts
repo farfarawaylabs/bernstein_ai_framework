@@ -1,4 +1,4 @@
-import { BaseMessage } from '@langchain/core/messages';
+import { BaseMessage, ToolMessage } from '@langchain/core/messages';
 
 interface ToolCall {
 	args: Record<string, any>;
@@ -38,9 +38,21 @@ class Operator {
 			promisses.push(selectedTool.invoke(toolCall));
 		}
 
-		const results = await Promise.all(promisses);
+		const results = await Promise.allSettled(promisses);
 
-		return results as BaseMessage[];
+		const messages = results.map((result, index) => {
+			if (result.status === 'fulfilled') {
+				return result.value;
+			} else {
+				return new ToolMessage({
+					content: 'Error executing tool.',
+					name: calls[index].name,
+					tool_call_id: calls[index].id || '',
+				});
+			}
+		});
+
+		return messages as BaseMessage[];
 	}
 }
 

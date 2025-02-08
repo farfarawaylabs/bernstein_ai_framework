@@ -17,6 +17,29 @@ export const getAIModel = (model: AI_MODELS) => {
 				apiKey: Environment.OPENAI_API_KEY,
 			});
 
+		case AI_MODELS.DEEPSEEK:
+			return new ChatOpenAI({
+				model: 'deepseek-chat',
+				configuration: {
+					baseURL: 'https://api.deepseek.com',
+				},
+				apiKey: Environment.DEEPSEEK_API_KEY,
+			});
+
+		case AI_MODELS.DEEPSEEK_R1: {
+			const model = new ChatOpenAI({
+				model: 'deepseek-reasoner',
+
+				configuration: {
+					baseURL: 'https://api.deepseek.com',
+				},
+
+				apiKey: Environment.DEEPSEEK_API_KEY,
+			});
+			model.bind({ response_format: { type: 'json_object' } });
+			return model;
+		}
+
 		default:
 			throw new Error('Invalid AI model');
 	}
