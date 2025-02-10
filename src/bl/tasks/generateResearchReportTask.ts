@@ -1,12 +1,11 @@
-import WrittenContentEditorAgent from "@/agents/writing/WrittenContentEditorAgent";
 import { addNewTask } from "./addNewTask";
 import { AI_MODELS, TASK_STATUS, TASK_TYPES } from "@/models/enums";
 import { SupabaseSerializer } from "@/framework/state/SupabaseSerializer";
-import { sendEmail } from "@/services/sendgrid";
 import { updateTask } from "@/dl/tasks/updateTask";
 import { getUser } from "../users/getUser";
 import { Context } from "hono";
 import ResearchReportAgent from "@/agents/writing/researchReports/ResearchReportAgent";
+import { sendContentReadyEmail } from "@/utils/tasksHelpers";
 
 export async function generateResearchReportTask(
     userId: string,
@@ -68,16 +67,7 @@ async function runTask(
     const endTime = new Date();
     const durationInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
 
-    await sendEmail({
-        from: "report@bernstein.deathstarlabs.com",
-        fromName: "Bernstein AI",
-        recipients: [email],
-        subject: "Your research report is ready",
-        text:
-            `Your research report about ${topic} is ready. You can find it here: https://bernsteinai.com/app/content/${response.conversationId}`,
-        html:
-            `<p>Your research report about ${topic} is ready. You can find it here: <a href="https://bernsteinai.com/app/content/${response.conversationId}">here</a></p>`,
-    });
+    await sendContentReadyEmail(email, topic, response.conversationId);
 
     await updateTask(
         taskId,

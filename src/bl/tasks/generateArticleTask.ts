@@ -1,11 +1,11 @@
 import { addNewTask } from "./addNewTask";
 import { AI_MODELS, TASK_STATUS, TASK_TYPES } from "@/models/enums";
 import { SupabaseSerializer } from "@/framework/state/SupabaseSerializer";
-import { sendEmail } from "@/services/sendgrid";
 import { updateTask } from "@/dl/tasks/updateTask";
 import { getUser } from "../users/getUser";
 import { Context } from "hono";
 import { ArticleWriterAgent } from "@/agents/writing/articles/ArticleWriterAgent";
+import { sendContentReadyEmail } from "@/utils/tasksHelpers";
 
 export async function generateArticleTask(
     userId: string,
@@ -77,16 +77,7 @@ async function runTask(
     const endTime = new Date();
     const durationInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
 
-    await sendEmail({
-        from: "report@bernstein.deathstarlabs.com",
-        fromName: "Bernstein AI",
-        recipients: [email],
-        subject: "Your article is ready",
-        text:
-            `Your article about ${topic} is ready. You can find it here: https://bernstein.deathstarlabs.com/content/${response.conversationId}`,
-        html:
-            `<p>Your article about ${topic} is ready. You can find it here: <a href="https://bernstein.deathstarlabs.com/content/${response.conversationId}">here</a></p>`,
-    });
+    await sendContentReadyEmail(email, topic, response.conversationId);
 
     await updateTask(
         taskId,
