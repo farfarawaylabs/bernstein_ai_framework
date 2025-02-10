@@ -1,134 +1,128 @@
-import { Conductor } from '@/framework/conductor';
-import { KVStoreConversationSerializer } from '@/framework/state/KVSerializer';
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { AI_MODELS } from '@/models/enums';
-import { Hono } from 'hono';
-import { weatherTool } from '@/framework/tools/demoTools';
-import { Operator } from '@/framework/operators';
-import { askUserTool, createAskUserInputTool } from '@/framework/tools/emailUserTool';
-import { aksPerplexityTool } from '@/framework/tools/aksPerpelxityTool';
-import BlogPostWriter from '@/agents/writers/blogPostWriter';
-import { ConversationSteps } from '@/framework/state/conversation';
-import { cacheConversationIdForEmail } from '@/utils/cacheHelpers';
-import { addUserInputTool } from '@/framework/tools/addUserInputTool';
-import ResearchWriter from '@/agents/writers/researchWriter';
+import { getNumberOfTasksPerUserPerDay } from "@/dl/tasks/getNumberOfTasksPerUserPerDay";
+import { Hono } from "hono";
+
 const app = new Hono<{ Bindings: Env }>();
 
-app.post('/writeResearchReport', async (c) => {
+app.post("/test", async (c) => {
 	const body = await c.req.json();
-	const researchWriter = new ResearchWriter(body.topic, body.additional_instructions);
-	const response = await researchWriter.run();
 
-	return c.json({ response, conversation: researchWriter.getConductor()?.getConversation() });
-});
-
-app.post('/writeBlogPost', async (c) => {
-	const body = await c.req.json();
-	const blogPostWriter = new BlogPostWriter(body.topic);
-	const response = await blogPostWriter.run();
-	//return c.json({ response: 'test' });
-	return c.json({ response, conversation: blogPostWriter.getConductor()?.getConversation() });
-});
-
-app.post('/withUserInput', async (c) => {
-	const body = await c.req.json();
-	const operator = new Operator({
-		ask_user_input: createAskUserInputTool(
-			'x@bernstein.deathstarlabs.com',
-			'Bernstein AI',
-			['shahar@farfarawaylabs.com'],
-			'Bernstein AI needs your input'
-		),
-	});
-
-	const conductor = new Conductor({
-		operator: operator,
-		defaultModel: AI_MODELS.CHATGPT4O,
-		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 1),
-	});
-
-	await conductor.startConversation();
-
-	const systemMessage = new SystemMessage(
-		'You are a helpful assistant that can answer questions and help with tasks. If you need to ask the user for input, use the provided tools to do so.'
+	// pass the date of today with the time of 00:01
+	const x = await getNumberOfTasksPerUserPerDay(
+		"f2263b0e-3388-467d-b34f-9ce2d137e199",
+		new Date(new Date().setHours(0, 1, 0, 0)),
 	);
-	const firstMessage = new HumanMessage(body.prompt);
 
-	await conductor.addMessages([systemMessage, firstMessage]);
-
-	const response = await conductor.conduct();
-
-	const currentStep = await conductor.getCurrentStep();
-
-	if (currentStep === ConversationSteps.WaitingForUserInput) {
-		await cacheConversationIdForEmail('shahar@farfarawaylabs.com', conductor.conversation!.id);
-	}
-
-	return c.json({ response });
+	return c.json({ response: x });
 });
 
-app.post('/runPrompt', async (c) => {
-	const body = await c.req.json();
+// app.post('/writeBlogPost', async (c) => {
+// 	const body = await c.req.json();
+// 	const blogPostWriter = new BlogPostWriter(body.topic);
+// 	const response = await blogPostWriter.run();
+// 	//return c.json({ response: 'test' });
+// 	return c.json({ response, conversation: blogPostWriter.getConductor()?.getConversation() });
+// });
 
-	const operator = new Operator({
-		get_current_weather: weatherTool,
-	});
+// app.post('/withUserInput', async (c) => {
+// 	const body = await c.req.json();
+// 	const operator = new Operator({
+// 		ask_user_input: createAskUserInputTool(
+// 			'x@bernstein.deathstarlabs.com',
+// 			'Bernstein AI',
+// 			['shahar@farfarawaylabs.com'],
+// 			'Bernstein AI needs your input'
+// 		),
+// 	});
 
-	const conductor = new Conductor({
-		operator: operator,
-		defaultModel: AI_MODELS.CHATGPT4O,
-		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 2),
-	});
+// 	const conductor = new Conductor({
+// 		operator: operator,
+// 		defaultModel: AI_MODELS.CHATGPT4O,
+// 		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 1),
+// 	});
 
-	await conductor.startConversation();
+// 	await conductor.startConversation();
 
-	const firstMessage = new HumanMessage(body.prompt);
+// 	const systemMessage = new SystemMessage(
+// 		'You are a helpful assistant that can answer questions and help with tasks. If you need to ask the user for input, use the provided tools to do so.'
+// 	);
+// 	const firstMessage = new HumanMessage(body.prompt);
 
-	await conductor.addMessages([firstMessage]);
+// 	await conductor.addMessages([systemMessage, firstMessage]);
 
-	const response = await conductor.conduct();
+// 	const response = await conductor.conduct();
 
-	return c.json({ response });
-});
+// 	const currentStep = await conductor.getCurrentStep();
 
-app.post('/testConduct', async (c) => {
-	const operator = new Operator({
-		get_current_weather: weatherTool,
-	});
+// 	if (currentStep === ConversationSteps.WaitingForUserInput) {
+// 		await cacheConversationIdForEmail('shahar@farfarawaylabs.com', conductor.conversation!.id);
+// 	}
 
-	const conductor = new Conductor({
-		operator: operator,
-		defaultModel: AI_MODELS.CHATGPT4O,
-		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 2),
-	});
+// 	return c.json({ response });
+// });
 
-	await conductor.startConversation();
+// app.post('/runPrompt', async (c) => {
+// 	const body = await c.req.json();
 
-	const firstMessage = new HumanMessage('When did Harrison Ford was born?');
+// 	const myWeatherTool = createWweatherTool('Bon Jour ');
+// 	const operator = new Operator({
+// 		get_current_weather: myWeatherTool,
+// 	});
 
-	await conductor.addMessages([firstMessage]);
+// 	const conductor = new Conductor({
+// 		operator: operator,
+// 		defaultModel: AI_MODELS.CHATGPT4O,
+// 		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 2),
+// 	});
 
-	const response = await conductor.runNextStep();
+// 	await conductor.startConversation();
 
-	const secondMessage = new HumanMessage('And where he was born?');
+// 	const firstMessage = new HumanMessage(body.prompt);
 
-	await conductor.addMessages([secondMessage]);
+// 	await conductor.addMessages([firstMessage]);
 
-	const response2 = await conductor.runNextStep();
+// 	const response = await conductor.conduct();
 
-	const thirdMessage = new HumanMessage("And what's the current weather in there?");
+// 	return c.json({ response });
+// });
 
-	await conductor.addMessages([thirdMessage]);
+// app.post('/testConduct', async (c) => {
+// 	const operator = new Operator({
+// 		get_current_weather: weatherTool,
+// 	});
 
-	const response3 = await conductor.runNextStep();
-	const response4 = await conductor.runNextStep();
-	const response5 = await conductor.runNextStep();
-	const response6 = await conductor.runNextStep();
+// 	const conductor = new Conductor({
+// 		operator: operator,
+// 		defaultModel: AI_MODELS.CHATGPT4O,
+// 		stateSerializer: new KVStoreConversationSerializer(60 * 60 * 24 * 2),
+// 	});
 
-	const conversation = await conductor.getConversation();
+// 	await conductor.startConversation();
 
-	return c.json({ conversation });
-});
+// 	const firstMessage = new HumanMessage('When did Harrison Ford was born?');
+
+// 	await conductor.addMessages([firstMessage]);
+
+// 	const response = await conductor.runNextStep();
+
+// 	const secondMessage = new HumanMessage('And where he was born?');
+
+// 	await conductor.addMessages([secondMessage]);
+
+// 	const response2 = await conductor.runNextStep();
+
+// 	const thirdMessage = new HumanMessage("And what's the current weather in there?");
+
+// 	await conductor.addMessages([thirdMessage]);
+
+// 	const response3 = await conductor.runNextStep();
+// 	const response4 = await conductor.runNextStep();
+// 	const response5 = await conductor.runNextStep();
+// 	const response6 = await conductor.runNextStep();
+
+// 	const conversation = await conductor.getConversation();
+
+// 	return c.json({ conversation });
+// });
 
 // app.post('/firstTask', async (c) => {
 // 	const body = await c.req.json();

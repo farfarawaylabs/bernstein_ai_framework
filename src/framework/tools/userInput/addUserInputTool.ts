@@ -1,7 +1,7 @@
 import { StructuredToolParams, tool } from '@langchain/core/tools';
 import { z } from 'zod';
 
-const simpleToolSchema: StructuredToolParams = {
+const addUserInputToolSchema: StructuredToolParams = {
 	name: 'add_user_input',
 	description: 'Use internally by conductor to add back user input to the conversation',
 	schema: z.object({
@@ -12,6 +12,6 @@ const simpleToolSchema: StructuredToolParams = {
 
 const addUserInputTool = tool(async (input: any) => {
 	return input.input;
-}, simpleToolSchema);
+}, addUserInputToolSchema);
 
 export { addUserInputTool };

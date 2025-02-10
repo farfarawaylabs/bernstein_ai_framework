@@ -1,5 +1,5 @@
-import { AI_MODELS, EMBEDDING_MODELS } from '@/models/enums';
-import { Env } from '@/models/Env';
+import { AI_MODELS, EMBEDDING_MODELS } from "@/models/enums";
+import { Env } from "@/models/Env";
 
 export default class Environment {
 	static OPENAI_API_KEY: string;
@@ -9,6 +9,9 @@ export default class Environment {
 	static NABUAI_API_KEY: string;
 	static KV_CACHE: KVNamespace;
 	static SERPER_DEV_API_KEY: string;
+	static SUPABASE_URL: string;
+	static SUPABASE_PRIVATE_KEY: string;
+	static userId: string;
 }
 
 export function initializeEnvironment(env: Env) {
@@ -19,4 +22,7 @@ export function initializeEnvironment(env: Env) {
 	Environment.NABUAI_API_KEY = env.NABUAI_API_KEY;
 	Environment.KV_CACHE = env.BERNSTEIN_CACHE;
 	Environment.SERPER_DEV_API_KEY = env.SERPER_DEV_API_KEY;
+	Environment.SUPABASE_URL = env.SUPABASE_URL;
+	Environment.SUPABASE_PRIVATE_KEY = env.SUPABASE_PRIVATE_KEY;
+	Environment.userId = env.userId;
 }

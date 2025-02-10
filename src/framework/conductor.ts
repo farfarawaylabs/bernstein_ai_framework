@@ -4,7 +4,7 @@ import { Conversation, ConversationSteps } from './state/conversation';
 import { Operator } from './operators';
 import { AI_MODELS } from '@/models/enums';
 import { getAIModel } from '@/utils/aiHelpers';
-import { addUserInputTool } from './tools/addUserInputTool';
+import { addUserInputTool } from './tools/userInput/addUserInputTool';
 
 interface ConductorRetryPlan {
 	numOfRetries: number;
@@ -105,8 +105,8 @@ class Conductor {
 		}
 	}
 
-	async startConversation() {
-		const newConversation = new Conversation();
+	async startConversation(conversationId?: string) {
+		const newConversation = new Conversation(conversationId);
 		this.conversationId = newConversation.id;
 		this.conversation = newConversation;
 		await this.stateSerializer.save(newConversation);
@@ -213,6 +213,12 @@ class Conductor {
 		await this.loadConversation();
 
 		return this.conversation!.currentStep;
+	}
+
+	async getFinalOutput() {
+		await this.loadConversation();
+
+		return this.conversation!.messages[this.conversation!.messages.length - 1].content;
 	}
 
 	// continueWithTask(task: Task) {

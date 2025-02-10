@@ -1,4 +1,4 @@
-import Environment from '@/utils/environment';
+import Environment from "@/utils/environment";
 
 export interface EmailMessage {
 	from: string;
@@ -23,8 +23,8 @@ export const sendEmail = async (email: EmailMessage) => {
 		},
 		subject: email.subject,
 		content: [
-			{ type: 'text/plain', value: email.text },
-			{ type: 'text/html', value: email.html },
+			{ type: "text/plain", value: email.text },
+			{ type: "text/html", value: email.html },
 		],
 		personalizations: [
 			{
@@ -37,18 +37,19 @@ export const sendEmail = async (email: EmailMessage) => {
 	};
 
 	try {
-		const result = await fetch('https://api.sendgrid.com/v3/mail/send', {
-			method: 'POST',
+		const result = await fetch("https://api.sendgrid.com/v3/mail/send", {
+			method: "POST",
 			headers: {
 				Authorization: `Bearer ${Environment.SENDGRID_API_KEY}`,
-				'Content-Type': 'application/json',
+				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(message),
 		});
 
+		console.log("Sending email result: ", result);
 		return true;
 	} catch (error) {
-		console.error('error sending email: ', error);
+		console.error("error sending email: ", error);
 		throw error;
 	}
 };

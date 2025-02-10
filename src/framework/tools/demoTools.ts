@@ -10,12 +10,16 @@ const simpleToolSchema: StructuredToolParams = {
 	}),
 };
 
-const weatherTool = tool(async (input: any) => {
-	const { city, state } = input;
-	if (city === 'Boston') {
-		return undefined;
-	}
-	return `The weather in ${city}, ${state} is sunny with a temperature of 70 degrees and humidity of 50%`;
-}, simpleToolSchema);
+function createWweatherTool(intro: string) {
+	return tool(async (input: any) => {
+		const { city, state } = input;
+		if (city === 'Boston') {
+			return undefined;
+		}
+		return `${intro} the weather in ${city}, ${state} is sunny with a temperature of 70 degrees and humidity of 50%`;
+	}, simpleToolSchema);
+}
 
-export { weatherTool };
+const weatherTool = createWweatherTool('Hello ');
+
+export { weatherTool, createWweatherTool };

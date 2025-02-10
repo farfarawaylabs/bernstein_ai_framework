@@ -2,7 +2,7 @@ import { Conductor } from '@/framework/conductor';
 import { Operator } from '@/framework/operators';
 import { Conversation } from '@/framework/state/conversation';
 import { KVStoreConversationSerializer } from '@/framework/state/KVSerializer';
-import { createAskUserInputTool } from '@/framework/tools/emailUserTool';
+import { createAskUserInputTool } from '@/framework/tools/userInput/emailUserTool';
 import { AI_MODELS } from '@/models/enums';
 import { getConversationIdFromEmail } from '@/utils/cacheHelpers';
 import { extractEmail, extractUserReply } from '@/utils/emailHelpers';
