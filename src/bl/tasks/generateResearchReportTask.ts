@@ -6,12 +6,12 @@ import { getUser } from "../users/getUser";
 import { Context } from "hono";
 import ResearchReportAgent from "@/agents/writing/researchReports/ResearchReportAgent";
 import { sendContentReadyEmail } from "@/utils/tasksHelpers";
+import { sendTaskToQueue } from "./sendTaskToQueue";
 
 export async function generateResearchReportTask(
     userId: string,
     topic: string,
     instructions: string,
-    ctx?: Context,
 ) {
     const user = await getUser(userId);
     const newTaskId = await addNewTask(
@@ -26,58 +26,20 @@ export async function generateResearchReportTask(
         };
     }
 
-    if (ctx) {
-        ctx.executionCtx.waitUntil(
-            runTask(newTaskId, userId, user.email!, topic, instructions),
-        );
-
-        return {
-            success: true,
-            taskId: newTaskId,
-        };
-    } else {
-        return await runTask(
-            newTaskId,
-            userId,
-            user.email!,
-            topic,
-            instructions,
-        );
-    }
-}
-
-async function runTask(
-    taskId: string,
-    userId: string,
-    email: string,
-    topic: string,
-    instructions: string,
-) {
-    const writerAgent = new ResearchReportAgent({
-        instructions: instructions,
-        topic: topic,
-        model: AI_MODELS.CHATGPT4O,
-        serializer: new SupabaseSerializer(
-            userId,
-        ),
+    await sendTaskToQueue({
+        type: TASK_TYPES.RESEARCH_REPORT,
+        taskId: newTaskId,
+        userId: userId,
+        data: {
+            topic: topic,
+            toneOfVoice: "",
+            instructions: instructions,
+            email: user.email!,
+        },
     });
-
-    const startTime = new Date();
-    const response = await writerAgent.run();
-    const endTime = new Date();
-    const durationInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
-
-    await sendContentReadyEmail(email, topic, response.conversationId);
-
-    await updateTask(
-        taskId,
-        Math.round(durationInSeconds),
-        TASK_STATUS.COMPLETED,
-        response.conversationId,
-    );
 
     return {
         success: true,
-        conversationId: response.conversationId,
+        taskId: newTaskId,
     };
 }

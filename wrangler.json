@@ -16,7 +16,34 @@
 			"binding": "BERNSTEIN_CACHE",
 			"id": "4facdfc5f62d42c7aa35d4db8d5c2431"
 		}
-	]
+	],
+	"routes": [
+		{
+			"pattern": "api.bernsteinai.com",
+			"custom_domain": true
+		}
+	],
+	"queues": {
+		"producers": [
+			{
+				"queue": "bernstein-content-generation",
+				"binding": "CONTENT_GENERATION_QUEUE"
+			}
+		],
+		"consumers": [
+			{
+				"queue": "bernstein-content-generation",
+				"max_batch_size": 5,
+				"max_batch_timeout": 1,
+				"max_retries": 3,
+				"retry_delay": 10
+			}
+		]
+	},
+	"vars": {
+		"SUPABASE_URL": "https://xhxexkminnfpyuwhnupa.supabase.co"
+	}
+
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

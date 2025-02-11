@@ -1,4 +1,13 @@
+import { getConversation } from "@/dl/conversations/dl_getConversation";
 import { getNumberOfTasksPerUserPerDay } from "@/dl/tasks/getNumberOfTasksPerUserPerDay";
+import { Conductor } from "@/framework/conductor";
+import { Operator } from "@/framework/operators";
+import { Conversation } from "@/framework/state/conversation";
+import { SupabaseSerializer } from "@/framework/state/SupabaseSerializer";
+import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
+import { getWritingToolsPackage } from "@/framework/tools/toolPackages";
+import { createResearchSectionWriterTool } from "@/framework/tools/writing/research/researchSectionWriterTool";
+import { AI_MODELS } from "@/models/enums";
 import { Hono } from "hono";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -13,6 +22,33 @@ app.post("/test", async (c) => {
 	);
 
 	return c.json({ response: x });
+});
+
+app.post("/continueConversation", async (c) => {
+	const body = await c.req.json();
+	const conversation = await getConversation(body.conversationId);
+
+	const operator = new Operator({
+		...getResearchToolsPackage(),
+		research_section_writer_agent: createResearchSectionWriterTool(
+			AI_MODELS.CHATGPT4O,
+		),
+	});
+
+	const conductor = new Conductor({
+		operator: operator,
+		defaultModel: AI_MODELS.CHATGPT4O,
+		stateSerializer: new SupabaseSerializer(
+			"c00b2969-1333-411a-bd95-d8653eb4427c",
+		),
+		conversationId: conversation.id,
+		hooks: {
+			onConversationStopped: async (conversation: Conversation) => {},
+		},
+	});
+	const response = await conductor.conduct();
+
+	return c.json({ response });
 });
 
 // app.post('/writeBlogPost', async (c) => {

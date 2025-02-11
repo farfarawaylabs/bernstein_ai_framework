@@ -1,5 +1,5 @@
 import { AIPrompt } from "@/utils/prompts/AIPrompt";
-import { BaseAgent, BaseAgentProps } from "@/agents/BaseAgent";
+import { BaseAgent, BaseAgentProps } from "@/framework/agents/BaseAgent";
 import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
 import { Operator } from "@/framework/operators";
 import { Conductor } from "@/framework/conductor";

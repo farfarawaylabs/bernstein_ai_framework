@@ -3,7 +3,7 @@ import { Operator } from "@/framework/operators";
 import { AI_MODELS } from "@/models/enums";
 import { Conductor } from "@/framework/conductor";
 import { HumanMessage } from "@langchain/core/messages";
-import { BaseAgent, BaseAgentProps } from "@/agents/BaseAgent";
+import { BaseAgent, BaseAgentProps } from "@/framework/agents/BaseAgent";
 import { createResearchAgentTool } from "@/framework/tools/research/researchAgentTool";
 
 interface GeneralWriterAgentProps extends BaseAgentProps {

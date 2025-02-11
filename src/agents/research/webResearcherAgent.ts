@@ -1,10 +1,10 @@
-import { AIPrompt } from '@/utils/prompts/AIPrompt';
-import { BaseAgent, BaseAgentProps } from '../BaseAgent';
-import { Operator } from '@/framework/operators';
-import { Conductor } from '@/framework/conductor';
-import { AI_MODELS } from '@/models/enums';
-import { HumanMessage } from '@langchain/core/messages';
-import { getResearchToolsPackage } from '@/framework/tools/toolPackages';
+import { AIPrompt } from "@/utils/prompts/AIPrompt";
+import { BaseAgent, BaseAgentProps } from "../../framework/agents/BaseAgent";
+import { Operator } from "@/framework/operators";
+import { Conductor } from "@/framework/conductor";
+import { AI_MODELS } from "@/models/enums";
+import { HumanMessage } from "@langchain/core/messages";
+import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
 
 interface WebResearcherAgentProps extends BaseAgentProps {
 	topic: string;
@@ -17,15 +17,19 @@ class WebResearcherAgent extends BaseAgent {
 		super(props);
 		this.prompt = AIPrompt.loadPrompt(webResearchPrompt, [
 			{ topic: props.topic },
-			{ questions: props.questions.join('\n') },
-			{ additional_instructions: props.additional_instructions ?? '' },
+			{ questions: props.questions.join("\n") },
+			{ additional_instructions: props.additional_instructions ?? "" },
 			{ date: new Date().toISOString() },
 		]);
 		this.config = {
 			...this.config,
 			...props,
 		};
-		console.log(`WebResearcherAgent initiated with the following config: ${JSON.stringify(props, null, 2)}`);
+		console.log(
+			`WebResearcherAgent initiated with the following config: ${
+				JSON.stringify(props, null, 2)
+			}`,
+		);
 	}
 
 	async run() {
@@ -47,14 +51,17 @@ class WebResearcherAgent extends BaseAgent {
 
 		const finalOutput = await this.conductor.getFinalOutput();
 
-		console.info('--------------------------------');
-		console.info(`WebResearcherAgent completed. Final output: ${finalOutput}`);
-		console.info('--------------------------------');
+		console.info("--------------------------------");
+		console.info(
+			`WebResearcherAgent completed. Final output: ${finalOutput}`,
+		);
+		console.info("--------------------------------");
 		return finalOutput;
 	}
 }
 
-const webResearchPrompt = `You are a professional web researcher tasked with creating comprehensive research reports. You will receive a topic and specific questions to focus on. Your task is to:
+const webResearchPrompt =
+	`You are a professional web researcher tasked with creating comprehensive research reports. You will receive a topic and specific questions to focus on. Your task is to:
 1. Thoroughly research the provided topic across available web sources
 2. Focus specifically on addressing the given questions
 3. Prioritize reliable, up-to-date, and authoritative sources.

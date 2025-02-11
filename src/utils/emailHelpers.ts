@@ -1,3 +1,9 @@
+/**
+ * Extracts an email address from a given string.
+ *
+ * @param fromField - The string containing the email address.
+ * @returns The extracted email address if found, otherwise null.
+ */
 export function extractEmail(fromField: string): string | null {
 	// Regular expression to match an email address
 	const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/;
@@ -9,6 +15,15 @@ export function extractEmail(fromField: string): string | null {
 	return match ? match[0] : null;
 }
 
+/**
+ * Extracts the user's reply from an email body by removing quoted threads.
+ *
+ * This function identifies common patterns used to separate the user's reply
+ * from the quoted email thread and returns only the user's reply.
+ *
+ * @param body - The full email body as a string.
+ * @returns The user's reply extracted from the email body.
+ */
 export function extractUserReply(body: string): string {
 	// Patterns to identify the start of the quoted thread
 	const replySeparators = [

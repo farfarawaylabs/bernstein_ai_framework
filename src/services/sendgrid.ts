@@ -1,20 +1,30 @@
 import Environment from "@/utils/environment";
 
+/**
+ * Interface representing the structure of an email message.
+ */
 export interface EmailMessage {
-	from: string;
-	fromName: string;
-	recipients: string[];
-	subject: string;
-	text: string;
-	html?: string;
-	attachments?: {
-		content: string;
-		filename: string;
-		type: string;
-		disposition: string;
+	from: string; // The sender's email address
+	fromName: string; // The sender's name
+	recipients: string[]; // List of recipient email addresses
+	subject: string; // Subject of the email
+	text: string; // Plain text content of the email
+	html?: string; // Optional HTML content of the email
+	attachments?: { // Optional attachments for the email
+		content: string; // Base64 encoded content of the attachment
+		filename: string; // Name of the attachment file
+		type: string; // MIME type of the attachment
+		disposition: string; // Content disposition of the attachment
 	}[];
 }
 
+/**
+ * Sends an email using the SendGrid API.
+ *
+ * @param email - The email message to be sent.
+ * @returns A promise that resolves to true if the email is sent successfully.
+ * @throws An error if the email sending fails.
+ */
 export const sendEmail = async (email: EmailMessage) => {
 	const message = {
 		from: {

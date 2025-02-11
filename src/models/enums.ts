@@ -30,6 +30,7 @@ export enum TASK_TYPES {
 	GENERIC_WRITING = "generic",
 	RESEARCH_REPORT = "research_report",
 	BLOG_POST = "blog_post",
+	ARTICLE = "article",
 }
 
 export enum TONE_OF_VOICE {

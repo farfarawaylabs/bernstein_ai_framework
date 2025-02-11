@@ -1,18 +1,29 @@
-import { AIPrompt } from '@/utils/prompts/AIPrompt';
-import { BaseAgent } from '../BaseAgent';
-import { getResearchToolsPackage } from '@/framework/tools/toolPackages';
-import { Operator } from '@/framework/operators';
-import { AI_MODELS } from '@/models/enums';
-import { Conductor } from '@/framework/conductor';
-import { HumanMessage } from '@langchain/core/messages';
-import { BaseAgentProps } from '../BaseAgent';
+import { AIPrompt } from "@/utils/prompts/AIPrompt";
+import { BaseAgent } from "@/framework/agents/BaseAgent";
+import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
+import { Operator } from "@/framework/operators";
+import { AI_MODELS } from "@/models/enums";
+import { Conductor } from "@/framework/conductor";
+import { HumanMessage } from "@langchain/core/messages";
+import { BaseAgentProps } from "@/framework/agents/BaseAgent";
 
+/**
+ * Interface for the properties required by the ProofReadingAgent.
+ */
 interface ProofReadingAgentProps extends BaseAgentProps {
 	instructions: string;
 	content: string;
 }
 
+/**
+ * ProofReadingAgent is responsible for proofreading content based on given instructions.
+ * It extends the BaseAgent and utilizes AI models to perform proofreading tasks.
+ */
 class ProofReadingAgent extends BaseAgent {
+	/**
+	 * Constructs a new ProofReadingAgent instance.
+	 * @param props - The properties required to initialize the agent, including instructions and content.
+	 */
 	constructor(props: ProofReadingAgentProps) {
 		super(props);
 		this.prompt = AIPrompt.loadPrompt(proofReadingPrompt, [
@@ -24,9 +35,20 @@ class ProofReadingAgent extends BaseAgent {
 			...this.config,
 			...props,
 		};
-		console.log(`ProofReadingAgent initiated with the following config: ${JSON.stringify(props, null, 2)}`);
+		console.log(
+			`ProofReadingAgent initiated with the following config: ${
+				JSON.stringify(props, null, 2)
+			}`,
+		);
 	}
 
+	/**
+	 * Executes the proofreading process.
+	 * Initializes the Conductor with the appropriate operator and model,
+	 * starts a conversation, adds the initial message, conducts the conversation,
+	 * and returns the final output.
+	 * @returns The final proofread content.
+	 */
 	async run() {
 		const operator = new Operator(getResearchToolsPackage());
 
@@ -50,6 +72,9 @@ class ProofReadingAgent extends BaseAgent {
 	}
 }
 
+/**
+ * The prompt template used by the ProofReadingAgent to guide the proofreading process.
+ */
 const proofReadingPrompt = `
 You are a professional proofreader with extensive experience in editorial work. Your task is to:
 
@@ -84,8 +109,6 @@ Original writing instructions given to the writer:
 
 Content to proofread:
 {content_to_proofread}
-
-
 `;
 
 export default ProofReadingAgent;
