@@ -28,6 +28,8 @@ The repository can be divided into two main parts:
 
 - **Operator** ([`operators.ts`](./src/framework/operators.ts)): Manages and executes agent tools (skills), providing methods to retrieve and execute them either sequentially or in parallel.
 
+- **Operator Serializers**: Developers can plug in serializers to persist every tool call and its result that the agent performs (including any agent that work was delegated to). The repository includes a sample operator that persists its state to Supabase ([`SupabaseOperator.ts`](./src/operators/SupabaseOperator.ts)).
+
 - **Skills (Tools)**: Users can encapsulate any function as a tool to enhance agent capabilities. A variety of pre-built skills are available under the [`tools`](./src/tools) folder, serving as examples for building custom tools.
 
 - **Conversation and State**: The conductor uses these to persist the state of a task. Developers can plug in their own state management solutions, with example implementations for Cloudflare KV and Supabase available under the [`state`](./src/state) folder.
