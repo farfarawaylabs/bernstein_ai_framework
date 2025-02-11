@@ -8,7 +8,7 @@ Welcome to the Bernstein AI framework repository. This project is focused on bui
 
 The repository can be divided into two main parts:
 
-- **Framework**: The core framework for building and running agents, located under the `framework` folder.
+- **Framework**: The core framework for building and running agents, located under the [`framework`](./src/framework) folder.
 - **Backend**: A fully working backend that demonstrates how to utilize the framework to build and run agents.
 
 ## Key Features
@@ -24,21 +24,21 @@ The repository can be divided into two main parts:
 
 ## Framework Components
 
-- **Conductor** (`@conductor.ts`): Orchestrates the lifecycle of an AI agent, managing conversation flow, task delegation, and user input handling.
+- **Conductor** ([`conductor.ts`](./src/framework/conductor.ts)): Orchestrates the lifecycle of an AI agent, managing conversation flow, task delegation, and user input handling.
 
-- **Operator** (`@operators.ts`): Manages and executes agent tools (skills), providing methods to retrieve and execute them either sequentially or in parallel.
+- **Operator** ([`operators.ts`](./src/framework/operators.ts)): Manages and executes agent tools (skills), providing methods to retrieve and execute them either sequentially or in parallel.
 
-- **Skills (Tools)**: Users can encapsulate any function as a tool to enhance agent capabilities. A variety of pre-built skills are available under the `@tools` folder, serving as examples for building custom tools.
+- **Skills (Tools)**: Users can encapsulate any function as a tool to enhance agent capabilities. A variety of pre-built skills are available under the [`tools`](./src/tools) folder, serving as examples for building custom tools.
 
-- **Conversation and State**: The conductor uses these to persist the state of a task. Developers can plug in their own state management solutions, with example implementations for Cloudflare KV and Supabase available under the `@state` folder.
+- **Conversation and State**: The conductor uses these to persist the state of a task. Developers can plug in their own state management solutions, with example implementations for Cloudflare KV and Supabase available under the [`state`](./src/state) folder.
 
 ## How to Build and Run Agents
 
-To build an agent, developers need to implement the abstract class `BaseAgent`. This provides a structured way to define the agent's behavior and capabilities. You can find multiple sample implementations of agents under the `@agents` folder to see how to build them.
+To build an agent, developers need to implement the abstract class [`BaseAgent`](./src/framework/agents/BaseAgent.ts). This provides a structured way to define the agent's behavior and capabilities. You can find multiple sample implementations of agents under the [`@agents`](./src/agents) folder to see how to build them.
 
 ### Key Points:
 
-- **Encapsulation as Tools**: Agents can be encapsulated as tools and provided to other agents as skills. This allows agents to delegate work to other agents, creating a flexible and scalable system. Developers can see examples of this under the `@tools` folder.
+- **Encapsulation as Tools**: Agents can be encapsulated as tools and provided to other agents as skills. This allows agents to delegate work to other agents, creating a flexible and scalable system. Developers can see examples of this under the [`tools`](./src/tools) folder.
 
 - **Delegation and Composition**: The framework's flexibility comes from its ability to delegate tasks across multiple agents. Agents can delegate work to other agents, which can further delegate tasks, creating a chain of responsibility and expertise.
 
@@ -52,14 +52,14 @@ This backend is written as a "demo" to showcase how to utilize the framework. It
 
 1. **Cloudflare Workers**: The backend is based on Cloudflare Workers. You need to create a Cloudflare account to proceed.
 
-2. **API Keys**: Add a `.dev.vars` file and include all the necessary API keys. You can find the required keys in the `@Env.ts` file. If certain services are not needed, you can remove them from the code.
+2. **API Keys**: Add a `.dev.vars` file and include all the necessary API keys. You can find the required keys in the [`Env.ts`](./src/Env.ts) file. If certain services are not needed, you can remove them from the code.
 
 3. **KV Serializer**: If you want to use the KV serializer, create a KV namespace in Cloudflare.
 
 4. **Supabase Serializer**:
 
    - Create a Supabase account.
-   - Run the migrations located in the `@supabase` folder.
+   - Run the migrations located in the [`@supabase`](./src/supabase) folder.
    - Generate TypeScript types by running `npm run gendbtypes`.
 
 5. **Run and Deploy**:
@@ -70,11 +70,11 @@ This backend is written as a "demo" to showcase how to utilize the framework. It
 
 The backend is built in three tiers:
 
-- **API**: Holds the routes and serves as the entry point to the backend. Located in the `@api` folder.
-- **BL (Business Logic)**: Encapsulates the business logic of starting and running a Conductor with specific agents. Located in the `@bl` folder.
-- **DL (Data Layer)**: Encapsulates access to the database to support a web app that can be built on top of the backend. Located in the `@dl` folder.
+- **API**: Holds the routes and serves as the entry point to the backend. Located in the [`@api`](./src/api) folder.
+- **BL (Business Logic)**: Encapsulates the business logic of starting and running a Conductor with specific agents. Located in the [`@bl`](./src/bl) folder.
+- **DL (Data Layer)**: Encapsulates access to the database to support a web app that can be built on top of the backend. Located in the [`@dl`](./src/dl) folder.
 
-The easiest way to learn how to use the entire framework is to follow the code path starting with the routes in the `@api` folder.
+The easiest way to learn how to use the entire framework is to follow the code path starting with the routes in the [`@api`](./src/api) folder.
 
 These steps will help you set up and run the backend, allowing you to explore the capabilities of the Bernstein AI framework.
 
