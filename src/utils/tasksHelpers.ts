@@ -15,17 +15,17 @@ import { sendEmail } from "@/services/sendgrid";
 export async function sendContentReadyEmail(
     to: string,
     topic: string,
-    conversationId: string,
+    taskId: string,
 ) {
     // Construct the plain text message
     const text = topic !== ""
-        ? `Your research report about ${topic} is ready. You can find it here: https://bernsteinai.com/app/content/${conversationId}`
-        : `Your custom writing task is ready. You can find it here: https://bernsteinai.com/app/content/${conversationId}`;
+        ? `Your research report about ${topic} is ready. You can find it here: https://bernsteinai.com/app/tasks/${taskId}`
+        : `Your custom writing task is ready. You can find it here: https://bernsteinai.com/app/tasks/${taskId}`;
 
     // Construct the HTML message
     const html = topic !== ""
-        ? `<p>Your research report about ${topic} is ready. You can find it here: <a href="https://bernsteinai.com/app/content/${conversationId}">here</a></p>`
-        : `<p>Your custom writing task is ready. You can find it here: <a href="https://bernsteinai.com/app/content/${conversationId}">here</a></p>`;
+        ? `<p>Your research report about ${topic} is ready. You can find it here: <a href="https://bernsteinai.com/app/tasks/${taskId}">here</a></p>`
+        : `<p>Your custom writing task is ready. You can find it here: <a href="https://bernsteinai.com/app/tasks/${taskId}">here</a></p>`;
 
     // Send the email using the sendEmail service
     return await sendEmail({

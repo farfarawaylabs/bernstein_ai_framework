@@ -88,7 +88,7 @@ class Operator {
 		} else {
 			console.log("no calls");
 		}
-		console.log("tools are: ", JSON.stringify(this.tools, null, 2));
+
 		for (const toolCall of calls) {
 			const selectedTool = this.getTool(toolCall.name);
 			promisses.push(selectedTool.invoke(toolCall));
@@ -100,8 +100,12 @@ class Operator {
 			if (result.status === "fulfilled") {
 				return result.value;
 			} else {
+				console.error(
+					"Error executing tool: ",
+					JSON.stringify(result, null, 2),
+				);
 				return new ToolMessage({
-					content: "Error executing tool.",
+					content: JSON.stringify({ error: "Error executing tool." }),
 					name: calls[index].name,
 					tool_call_id: calls[index].id || "",
 				});
@@ -113,7 +117,7 @@ class Operator {
 				await this.serializeToolCall(
 					this.taskId,
 					calls[index],
-					currCallResult,
+					currCallResult.content,
 				);
 			}
 		}

@@ -36,7 +36,7 @@ const researchSectionWriterToolSchema: StructuredToolParams = {
  * @param {AI_MODELS} model - The AI model to be used for generating the research report section.
  * @returns {Function} A tool function that processes input and returns a generated research report section.
  */
-function createResearchSectionWriterTool(model: AI_MODELS) {
+function createResearchSectionWriterTool(model: AI_MODELS, taskId?: string) {
     return tool(async (input: any) => {
         console.log(
             `ResearchSectionWriterTool initiated with the following input: ${
@@ -46,6 +46,7 @@ function createResearchSectionWriterTool(model: AI_MODELS) {
         const { writing_instructions, tone_and_style_guidelines } = input;
 
         const researchAgent = new ResearchReportSectionWriterAgent({
+            taskId: taskId,
             writingInstructions: writing_instructions,
             toneAndStyleGuidelines: tone_and_style_guidelines,
             model: model,

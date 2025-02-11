@@ -35,8 +35,11 @@ export function getResearchToolsPackage() {
  * @returns An object containing tools for writing tasks.
  * - `writer_agent`: A general-purpose writing tool that can generate text based on the specified AI model.
  */
-export function getWritingToolsPackage(model: AI_MODELS = AI_MODELS.CHATGPT4O) {
+export function getWritingToolsPackage(
+	model: AI_MODELS = AI_MODELS.CHATGPT4O,
+	taskId?: string,
+) {
 	return {
-		writer_agent: createGeneralWriterTool(model),
+		writer_agent: createGeneralWriterTool(model, taskId),
 	};
 }

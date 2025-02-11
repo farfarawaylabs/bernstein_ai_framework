@@ -1,11 +1,11 @@
 import { AIPrompt } from "@/utils/prompts/AIPrompt";
 import { BaseAgent, BaseAgentProps } from "@/framework/agents/BaseAgent";
 import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
-import { Operator } from "@/framework/operators";
 import { Conductor } from "@/framework/conductor";
 import { AI_MODELS } from "@/models/enums";
 import { HumanMessage } from "@langchain/core/messages";
 import { createResearchSectionWriterTool } from "@/framework/tools/writing/research/researchSectionWriterTool";
+import { SupabaseOperator } from "@/operators/SupabaseOperator";
 
 interface ResearchReportAgentProps extends BaseAgentProps {
 	topic: string;
@@ -32,11 +32,13 @@ class ResearchReportAgent extends BaseAgent {
 	}
 
 	async run() {
-		const operator = new Operator({
+		const operator = new SupabaseOperator({
+			taskId: this.taskId,
 			tools: {
 				...getResearchToolsPackage(),
 				research_section_writer_agent: createResearchSectionWriterTool(
 					this.config.model ?? AI_MODELS.CHATGPT4O,
+					this.taskId,
 				),
 			},
 		});

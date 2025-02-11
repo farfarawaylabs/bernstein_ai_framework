@@ -18,3 +18,9 @@ export interface GenerateArticleInput {
 export interface GenerateGenericWritingInput {
 	instructions: string;
 }
+
+export interface GetContentByTaskInput {
+	taskId: string;
+	getToolCallsHistory: boolean;
+	includeRawConversation: boolean;
+}

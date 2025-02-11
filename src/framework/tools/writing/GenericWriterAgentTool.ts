@@ -34,7 +34,7 @@ const generalWriterAgentToolSchema: StructuredToolParams = {
  * @param model - The AI model to be used for generating content.
  * @returns A tool function that takes input and returns generated content.
  */
-function createGeneralWriterTool(model: AI_MODELS) {
+function createGeneralWriterTool(model: AI_MODELS, taskId?: string) {
 	return tool(async (input: any) => {
 		console.log(
 			`GeneralWriterAgentTool initiated with the following input: ${
@@ -48,6 +48,7 @@ function createGeneralWriterTool(model: AI_MODELS) {
 			writingInstructions: writing_instructions,
 			toneAndStyleGuidelines: tone_and_style_guidelines,
 			model: model,
+			taskId: taskId,
 		});
 
 		// Execute the agent to generate the writing content

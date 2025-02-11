@@ -1,6 +1,6 @@
 {
 	"name": "bernstein",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
@@ -17,14 +17,14 @@
 		"@cloudflare/workers-types": "^4.20250204.0",
 		"typescript": "^5.5.2",
 		"vitest": "2.1.8",
-		"wrangler": "^3.107.3"
+		"wrangler": "^3.108.0"
 	},
 	"dependencies": {
 		"@langchain/anthropic": "^0.3.13",
-		"@langchain/core": "^0.3.38",
-		"@langchain/openai": "^0.4.2",
+		"@langchain/core": "^0.3.39",
+		"@langchain/openai": "^0.4.3",
 		"@supabase/supabase-js": "^2.48.1",
-		"hono": "^4.6.20",
+		"hono": "^4.7.0",
 		"langchain": "^0.3.15",
 		"zod": "^3.24.1",
 		"zodex": "^0.18.2"

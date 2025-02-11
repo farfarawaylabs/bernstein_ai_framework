@@ -4,10 +4,10 @@ import {
 	getResearchToolsPackage,
 	getWritingToolsPackage,
 } from "@/framework/tools/toolPackages";
-import { Operator } from "@/framework/operators";
 import { Conductor } from "@/framework/conductor";
 import { AI_MODELS } from "@/models/enums";
 import { HumanMessage } from "@langchain/core/messages";
+import { SupabaseOperator } from "@/operators/SupabaseOperator";
 
 interface WrittenContentEditorAgentProps extends BaseAgentProps {
 	topic: string;
@@ -34,10 +34,14 @@ class WrittenContentEditorAgent extends BaseAgent {
 	}
 
 	async run() {
-		const operator = new Operator({
+		const operator = new SupabaseOperator({
+			taskId: this.taskId,
 			tools: {
 				...getResearchToolsPackage(),
-				...getWritingToolsPackage(),
+				...getWritingToolsPackage(
+					this.config.model ?? AI_MODELS.CHATGPT4O,
+					this.taskId,
+				),
 			},
 		});
 

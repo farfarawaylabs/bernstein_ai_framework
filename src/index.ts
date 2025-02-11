@@ -114,7 +114,7 @@ async function generateContent(task: AsyncTask) {
     await sendContentReadyEmail(
         task.data.email,
         task.data.topic,
-        response.conversationId,
+        task.taskId,
     );
 
     await updateTask(

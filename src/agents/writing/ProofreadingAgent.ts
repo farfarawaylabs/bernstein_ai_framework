@@ -1,11 +1,11 @@
 import { AIPrompt } from "@/utils/prompts/AIPrompt";
 import { BaseAgent } from "@/framework/agents/BaseAgent";
 import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
-import { Operator } from "@/framework/operators";
 import { AI_MODELS } from "@/models/enums";
 import { Conductor } from "@/framework/conductor";
 import { HumanMessage } from "@langchain/core/messages";
 import { BaseAgentProps } from "@/framework/agents/BaseAgent";
+import { SupabaseOperator } from "@/operators/SupabaseOperator";
 
 /**
  * Interface for the properties required by the ProofReadingAgent.
@@ -50,7 +50,10 @@ class ProofReadingAgent extends BaseAgent {
 	 * @returns The final proofread content.
 	 */
 	async run() {
-		const operator = new Operator({ tools: getResearchToolsPackage() });
+		const operator = new SupabaseOperator({
+			taskId: this.taskId,
+			tools: getResearchToolsPackage(),
+		});
 
 		this.conductor = new Conductor({
 			operator: operator,

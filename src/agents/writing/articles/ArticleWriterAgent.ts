@@ -1,8 +1,8 @@
 import { BaseAgent, BaseAgentProps } from "@/framework/agents/BaseAgent";
 import { Conductor } from "@/framework/conductor";
-import { Operator } from "@/framework/operators";
 import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
 import { AI_MODELS } from "@/models/enums";
+import { SupabaseOperator } from "@/operators/SupabaseOperator";
 import { AIPrompt } from "@/utils/prompts/AIPrompt";
 import { HumanMessage } from "@langchain/core/messages";
 
@@ -33,7 +33,8 @@ export class ArticleWriterAgent extends BaseAgent {
     }
 
     async run() {
-        const operator = new Operator({
+        const operator = new SupabaseOperator({
+            taskId: this.taskId,
             tools: { ...getResearchToolsPackage() },
         });
 

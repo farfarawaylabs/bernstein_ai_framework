@@ -1,10 +1,10 @@
 import { AIPrompt } from "@/utils/prompts/AIPrompt";
-import { Operator } from "@/framework/operators";
 import { AI_MODELS } from "@/models/enums";
 import { Conductor } from "@/framework/conductor";
 import { HumanMessage } from "@langchain/core/messages";
 import { BaseAgent, BaseAgentProps } from "@/framework/agents/BaseAgent";
 import { createResearchAgentTool } from "@/framework/tools/research/researchAgentTool";
+import { SupabaseOperator } from "@/operators/SupabaseOperator";
 
 interface ResearchReportSectionWriterAgentProps extends BaseAgentProps {
     writingInstructions: string;
@@ -31,9 +31,13 @@ class ResearchReportSectionWriterAgent extends BaseAgent {
     }
 
     async run() {
-        const operator = new Operator({
+        const operator = new SupabaseOperator({
+            taskId: this.taskId,
             tools: {
-                research_agent: createResearchAgentTool(),
+                research_agent: createResearchAgentTool(
+                    this.config.model ?? AI_MODELS.CHATGPT4O,
+                    this.taskId,
+                ),
             },
         });
 

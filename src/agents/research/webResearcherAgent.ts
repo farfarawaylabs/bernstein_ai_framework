@@ -1,10 +1,10 @@
 import { AIPrompt } from "@/utils/prompts/AIPrompt";
 import { BaseAgent, BaseAgentProps } from "../../framework/agents/BaseAgent";
-import { Operator } from "@/framework/operators";
 import { Conductor } from "@/framework/conductor";
 import { AI_MODELS } from "@/models/enums";
 import { HumanMessage } from "@langchain/core/messages";
 import { getResearchToolsPackage } from "@/framework/tools/toolPackages";
+import { SupabaseOperator } from "@/operators/SupabaseOperator";
 
 interface WebResearcherAgentProps extends BaseAgentProps {
 	topic: string;
@@ -33,7 +33,10 @@ class WebResearcherAgent extends BaseAgent {
 	}
 
 	async run() {
-		const operator = new Operator({ tools: getResearchToolsPackage() });
+		const operator = new SupabaseOperator({
+			taskId: this.taskId,
+			tools: getResearchToolsPackage(),
+		});
 
 		this.conductor = new Conductor({
 			operator: operator,

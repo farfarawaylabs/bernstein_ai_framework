@@ -1,3 +1,4 @@
+import { getToolCallsForTask } from "@/bl/tasks/getToolCallsForTask";
 import { getConversation } from "@/dl/conversations/dl_getConversation";
 import { getNumberOfTasksPerUserPerDay } from "@/dl/tasks/getNumberOfTasksPerUserPerDay";
 import { Conductor } from "@/framework/conductor";
@@ -13,12 +14,11 @@ import { Hono } from "hono";
 const app = new Hono<{ Bindings: Env }>();
 
 app.post("/test", async (c) => {
-	const body = await c.req.json();
+	console.log("test");
+	//const body = await c.req.json();
 
-	// pass the date of today with the time of 00:01
-	const x = await getNumberOfTasksPerUserPerDay(
-		"f2263b0e-3388-467d-b34f-9ce2d137e199",
-		new Date(new Date().setHours(0, 1, 0, 0)),
+	const x = await getToolCallsForTask(
+		"44b88a70-fee1-4f4e-ba50-4c7567a4573b",
 	);
 
 	return c.json({ response: x });
