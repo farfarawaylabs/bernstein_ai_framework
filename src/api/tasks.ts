@@ -22,7 +22,6 @@ app.post("/generateResearchReport", async (c) => {
 		Environment.userId,
 		topic,
 		instructions,
-		c,
 	);
 
 	return c.json(res);
@@ -37,7 +36,6 @@ app.post("/generateBlogPost", async (c) => {
 		topic,
 		toneOfVoice,
 		instructions,
-		c,
 	);
 
 	console.log("sending back response ", res);
@@ -54,7 +52,6 @@ app.post("/generateArticle", async (c) => {
 		topic,
 		TONE_OF_VOICE[tone],
 		instructions,
-		c,
 	);
 
 	return c.json(res);
@@ -67,7 +64,6 @@ app.post("/generateCustomWriting", async (c) => {
 	const res = await generateCustomWritingTask(
 		Environment.userId,
 		instructions,
-		c,
 	);
 
 	return c.json(res);

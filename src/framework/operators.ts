@@ -3,10 +3,20 @@ import { BaseMessage, ToolMessage } from "@langchain/core/messages";
 /**
  * Represents a call to a tool with specific arguments.
  */
-interface ToolCall {
+export interface ToolCall {
 	args: Record<string, any>; // Arguments to be passed to the tool
 	id?: string; // Optional identifier for the tool call
 	name: string; // Name of the tool to be invoked
+}
+
+export interface OperatorConfig {
+	tools: Record<string, any>;
+	serializeToolCall?: (
+		taskId: string,
+		toolCall: ToolCall,
+		result: any,
+	) => Promise<void>;
+	taskId?: string;
 }
 
 /**
@@ -15,13 +25,21 @@ interface ToolCall {
  */
 class Operator {
 	private tools: Record<string, any>; // A collection of tools available for execution
+	private serializeToolCall?: (
+		taskId: string,
+		toolCall: ToolCall,
+		result: any,
+	) => Promise<void>;
+	private taskId?: string;
 
 	/**
 	 * Constructs an Operator instance with a given set of tools.
 	 * @param tools - A record of tools where the key is the tool name and the value is the tool instance.
 	 */
-	constructor(tools: Record<string, any>) {
-		this.tools = tools;
+	constructor(config: OperatorConfig) {
+		this.tools = config.tools;
+		this.serializeToolCall = config.serializeToolCall;
+		this.taskId = config.taskId;
 	}
 
 	/**
@@ -89,6 +107,16 @@ class Operator {
 				});
 			}
 		});
+
+		if (this.serializeToolCall && this.taskId) {
+			for (const [index, currCallResult] of messages.entries()) {
+				await this.serializeToolCall(
+					this.taskId,
+					calls[index],
+					currCallResult,
+				);
+			}
+		}
 
 		return messages as BaseMessage[];
 	}

@@ -167,6 +167,44 @@ export type Database = {
           },
         ]
       }
+      tool_calls: {
+        Row: {
+          call: Json
+          created_at: string
+          id: string
+          result: Json
+          task_id: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          call: Json
+          created_at?: string
+          id?: string
+          result: Json
+          task_id?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          call?: Json
+          created_at?: string
+          id?: string
+          result?: Json
+          task_id?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_calls_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

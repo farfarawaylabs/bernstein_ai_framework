@@ -33,7 +33,9 @@ export class ArticleWriterAgent extends BaseAgent {
     }
 
     async run() {
-        const operator = new Operator({ ...getResearchToolsPackage() });
+        const operator = new Operator({
+            tools: { ...getResearchToolsPackage() },
+        });
 
         this.conductor = new Conductor({
             operator: operator,

@@ -57,6 +57,7 @@ function getAgentForTask(task: AsyncTask) {
     switch (task.type) {
         case TASK_TYPES.ARTICLE:
             return new ArticleWriterAgent({
+                taskId: task.taskId,
                 instructions: task.data.instructions,
                 topic: task.data.topic,
                 toneOfVoice: task.data.toneOfVoice,
@@ -68,6 +69,7 @@ function getAgentForTask(task: AsyncTask) {
 
         case TASK_TYPES.BLOG_POST:
             return new BlogPostWriterAgent({
+                taskId: task.taskId,
                 instructions: task.data.instructions,
                 topic: task.data.topic,
                 toneOfVoice: task.data.toneOfVoice,
@@ -79,6 +81,7 @@ function getAgentForTask(task: AsyncTask) {
 
         case TASK_TYPES.RESEARCH_REPORT:
             return new ResearchReportAgent({
+                taskId: task.taskId,
                 instructions: task.data.instructions,
                 topic: task.data.topic,
                 model: AI_MODELS.CHATGPT4O,
@@ -89,6 +92,7 @@ function getAgentForTask(task: AsyncTask) {
 
         default:
             return new WrittenContentEditorAgent({
+                taskId: task.taskId,
                 instructions: task.data.instructions,
                 topic: "topic",
                 model: AI_MODELS.CHATGPT4O,

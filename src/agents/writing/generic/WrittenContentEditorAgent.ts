@@ -35,8 +35,10 @@ class WrittenContentEditorAgent extends BaseAgent {
 
 	async run() {
 		const operator = new Operator({
-			...getResearchToolsPackage(),
-			...getWritingToolsPackage(),
+			tools: {
+				...getResearchToolsPackage(),
+				...getWritingToolsPackage(),
+			},
 		});
 
 		this.conductor = new Conductor({

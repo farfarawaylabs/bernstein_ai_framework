@@ -50,7 +50,7 @@ class ProofReadingAgent extends BaseAgent {
 	 * @returns The final proofread content.
 	 */
 	async run() {
-		const operator = new Operator(getResearchToolsPackage());
+		const operator = new Operator({ tools: getResearchToolsPackage() });
 
 		this.conductor = new Conductor({
 			operator: operator,

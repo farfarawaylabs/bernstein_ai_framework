@@ -11,6 +11,9 @@ export interface BaseAgentProps {
 	model?: AI_MODELS;
 	/** The serializer to be used for conversation state management. Defaults to KVStoreConversationSerializer. */
 	serializer?: ConversationSerializer;
+
+	/** The ID of the task to be run by the agent. */
+	taskId?: string;
 }
 
 /**
@@ -27,6 +30,8 @@ export abstract class BaseAgent {
 	protected conductor: Conductor | undefined;
 	/** Configuration object containing model and serializer settings. */
 	protected config: any;
+	/** The ID of the task to be run by the agent. */
+	protected taskId: string | undefined;
 
 	/**
 	 * Constructs a new BaseAgent instance.
@@ -35,6 +40,7 @@ export abstract class BaseAgent {
 	constructor(props: BaseAgentProps) {
 		this.agentId = crypto.randomUUID();
 		this.prompt = "";
+		this.taskId = props.taskId;
 
 		const {
 			model = AI_MODELS.CHATGPT4O,

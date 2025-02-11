@@ -29,10 +29,12 @@ app.post("/continueConversation", async (c) => {
 	const conversation = await getConversation(body.conversationId);
 
 	const operator = new Operator({
-		...getResearchToolsPackage(),
-		research_section_writer_agent: createResearchSectionWriterTool(
-			AI_MODELS.CHATGPT4O,
-		),
+		tools: {
+			...getResearchToolsPackage(),
+			research_section_writer_agent: createResearchSectionWriterTool(
+				AI_MODELS.CHATGPT4O,
+			),
+		},
 	});
 
 	const conductor = new Conductor({

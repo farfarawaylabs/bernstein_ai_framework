@@ -32,7 +32,9 @@ class GeneralWriterAgent extends BaseAgent {
 
 	async run() {
 		const operator = new Operator({
-			research_agent: createResearchAgentTool(),
+			tools: {
+				research_agent: createResearchAgentTool(),
+			},
 		});
 
 		this.conductor = new Conductor({

@@ -25,7 +25,7 @@ class ResearchReportAgent extends BaseAgent {
 			...props,
 		};
 		console.log(
-			`WrittenContentEditorAgent initiated with the following config: ${
+			`ResearchReportAgent initiated with the following config: ${
 				JSON.stringify(props, null, 2)
 			}`,
 		);
@@ -33,10 +33,12 @@ class ResearchReportAgent extends BaseAgent {
 
 	async run() {
 		const operator = new Operator({
-			...getResearchToolsPackage(),
-			research_section_writer_agent: createResearchSectionWriterTool(
-				this.config.model ?? AI_MODELS.CHATGPT4O,
-			),
+			tools: {
+				...getResearchToolsPackage(),
+				research_section_writer_agent: createResearchSectionWriterTool(
+					this.config.model ?? AI_MODELS.CHATGPT4O,
+				),
+			},
 		});
 
 		this.conductor = new Conductor({

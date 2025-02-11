@@ -17,7 +17,7 @@ export async function generateArticleTask(
     const user = await getUser(userId);
     const newTaskId = await addNewTask(
         userId,
-        TASK_TYPES.GENERIC_WRITING,
+        TASK_TYPES.ARTICLE,
     );
 
     if (!newTaskId) {

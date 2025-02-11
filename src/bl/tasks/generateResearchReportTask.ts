@@ -16,7 +16,7 @@ export async function generateResearchReportTask(
     const user = await getUser(userId);
     const newTaskId = await addNewTask(
         userId,
-        TASK_TYPES.GENERIC_WRITING,
+        TASK_TYPES.RESEARCH_REPORT,
     );
 
     if (!newTaskId) {
