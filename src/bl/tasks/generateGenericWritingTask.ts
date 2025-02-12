@@ -1,11 +1,6 @@
-import WrittenContentEditorAgent from "@/agents/writing/generic/WrittenContentEditorAgent";
 import { addNewTask } from "./addNewTask";
-import { AI_MODELS, TASK_STATUS, TASK_TYPES } from "@/models/enums";
-import { SupabaseSerializer } from "@/framework/state/SupabaseSerializer";
-import { updateTask } from "@/dl/tasks/updateTask";
+import { TASK_TYPES } from "@/models/enums";
 import { getUser } from "../users/getUser";
-import { Context } from "hono";
-import { sendContentReadyEmail } from "@/utils/tasksHelpers";
 import { sendTaskToQueue } from "./sendTaskToQueue";
 
 export async function generateCustomWritingTask(
@@ -13,9 +8,18 @@ export async function generateCustomWritingTask(
     instructions: string,
 ) {
     const user = await getUser(userId);
+    const data = {
+        topic: `Custom - ${instructions.substring(0, 15)}`,
+        toneOfVoice: "",
+        instructions: instructions,
+        email: user.email!,
+    };
+
     const newTaskId = await addNewTask(
         userId,
         TASK_TYPES.GENERIC_WRITING,
+        data.topic,
+        data,
     );
 
     if (!newTaskId) {
@@ -29,12 +33,8 @@ export async function generateCustomWritingTask(
         type: TASK_TYPES.GENERIC_WRITING,
         taskId: newTaskId,
         userId: userId,
-        data: {
-            topic: "",
-            toneOfVoice: "",
-            instructions: instructions,
-            email: user.email!,
-        },
+        title: data.topic,
+        data: data,
     });
 
     return {

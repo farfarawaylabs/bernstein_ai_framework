@@ -3,6 +3,8 @@ import { getDBClient } from "../dl_common";
 export async function addTask(
     userId: string,
     type: string,
+    title: string,
+    taskData?: Record<string, any>,
     conversationId?: string,
 ) {
     const db = getDBClient();
@@ -12,8 +14,10 @@ export async function addTask(
             user_id: userId,
             type,
             conversation_id: conversationId,
+            title,
+            data: taskData,
         })
-        .select("id, user_id, type, conversation_id, status, created_at")
+        .select("*")
         .single();
 
     if (error) {

@@ -5,6 +5,7 @@ import tests from "./api/tests";
 import email from "./api/email";
 import tasks from "./api/tasks";
 import content from "./api/content";
+import users from "./api/users";
 import validateSession from "./api/middlewares/validateSession";
 import { initializeEnvironment as initializeEnvironmentBL } from "@/utils/environment";
 import { Env } from "@/models/Env";
@@ -23,12 +24,14 @@ const app = new Hono();
 
 app.use("*", cors(), initializeEnvironment());
 app.use("/tasks/*", validateSession());
+app.use("/users/*", validateSession());
 //app.use("/content/*", validateSession());
 
 app.route("/tests", tests);
 app.route("/email", email);
 app.route("/tasks", tasks);
 app.route("/content", content);
+app.route("/users", users);
 
 export default {
     fetch: app.fetch,

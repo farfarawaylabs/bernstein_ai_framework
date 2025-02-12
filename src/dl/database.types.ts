@@ -127,8 +127,10 @@ export type Database = {
           conversation_id: string | null
           created_at: string
           id: string
+          instructions: Json | null
           run_duration: number
           status: string
+          title: string | null
           type: string
           user_id: string
         }
@@ -136,8 +138,10 @@ export type Database = {
           conversation_id?: string | null
           created_at?: string
           id?: string
+          instructions?: Json | null
           run_duration?: number
           status?: string
+          title?: string | null
           type?: string
           user_id: string
         }
@@ -145,8 +149,10 @@ export type Database = {
           conversation_id?: string | null
           created_at?: string
           id?: string
+          instructions?: Json | null
           run_duration?: number
           status?: string
+          title?: string | null
           type?: string
           user_id?: string
         }

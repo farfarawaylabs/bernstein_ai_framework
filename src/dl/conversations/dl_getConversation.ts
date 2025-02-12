@@ -13,5 +13,7 @@ export async function getConversation(conversationId: string) {
         throw new Error(error.message);
     }
 
-    return Conversation.deserializeConversationState(data.conversation_details);
+    return Conversation.deserializeConversationState(
+        data.conversation_details as Record<string, any>,
+    );
 }

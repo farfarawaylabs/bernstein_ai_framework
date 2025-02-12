@@ -1,11 +1,6 @@
 import { addNewTask } from "./addNewTask";
-import { AI_MODELS, TASK_STATUS, TASK_TYPES } from "@/models/enums";
-import { SupabaseSerializer } from "@/framework/state/SupabaseSerializer";
-import { updateTask } from "@/dl/tasks/updateTask";
+import { TASK_TYPES } from "@/models/enums";
 import { getUser } from "../users/getUser";
-import { Context } from "hono";
-import ResearchReportAgent from "@/agents/writing/researchReports/ResearchReportAgent";
-import { sendContentReadyEmail } from "@/utils/tasksHelpers";
 import { sendTaskToQueue } from "./sendTaskToQueue";
 
 export async function generateResearchReportTask(
@@ -14,9 +9,18 @@ export async function generateResearchReportTask(
     instructions: string,
 ) {
     const user = await getUser(userId);
+    const data = {
+        topic,
+        toneOfVoice: "",
+        instructions,
+        email: user.email!,
+    };
+
     const newTaskId = await addNewTask(
         userId,
         TASK_TYPES.RESEARCH_REPORT,
+        data.topic,
+        data,
     );
 
     if (!newTaskId) {
@@ -30,12 +34,8 @@ export async function generateResearchReportTask(
         type: TASK_TYPES.RESEARCH_REPORT,
         taskId: newTaskId,
         userId: userId,
-        data: {
-            topic: topic,
-            toneOfVoice: "",
-            instructions: instructions,
-            email: user.email!,
-        },
+        title: data.topic,
+        data: data,
     });
 
     return {

@@ -11,6 +11,7 @@ import { generateResearchReportTask } from "@/bl/tasks/generateResearchReportTas
 import { generateBlogPostTask } from "@/bl/tasks/generateBlogPostTask";
 import { generateArticleTask } from "@/bl/tasks/generateArticleTask";
 import { TONE_OF_VOICE } from "@/models/enums";
+import { deleteTask } from "@/bl/tasks/deleteTask";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -67,6 +68,12 @@ app.post("/generateCustomWriting", async (c) => {
 	);
 
 	return c.json(res);
+});
+
+app.delete("/:id", async (c) => {
+	const id = c.req.param("id");
+	await deleteTask(Environment.userId, id);
+	return c.json({ success: true });
 });
 
 export default app;

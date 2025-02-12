@@ -1,11 +1,6 @@
 import { addNewTask } from "./addNewTask";
-import { AI_MODELS, TASK_STATUS, TASK_TYPES } from "@/models/enums";
-import { SupabaseSerializer } from "@/framework/state/SupabaseSerializer";
-import { updateTask } from "@/dl/tasks/updateTask";
+import { TASK_TYPES } from "@/models/enums";
 import { getUser } from "../users/getUser";
-import { Context } from "hono";
-import { ArticleWriterAgent } from "@/agents/writing/articles/ArticleWriterAgent";
-import { sendContentReadyEmail } from "@/utils/tasksHelpers";
 import { sendTaskToQueue } from "./sendTaskToQueue";
 
 export async function generateArticleTask(
@@ -15,9 +10,18 @@ export async function generateArticleTask(
     instructions: string,
 ) {
     const user = await getUser(userId);
+    const data = {
+        topic,
+        toneOfVoice,
+        instructions,
+        email: user.email!,
+    };
+
     const newTaskId = await addNewTask(
         userId,
         TASK_TYPES.ARTICLE,
+        topic,
+        data,
     );
 
     if (!newTaskId) {
@@ -31,12 +35,8 @@ export async function generateArticleTask(
         type: TASK_TYPES.ARTICLE,
         taskId: newTaskId,
         userId: userId,
-        data: {
-            topic: topic,
-            toneOfVoice: toneOfVoice,
-            instructions: instructions,
-            email: user.email!,
-        },
+        title: topic,
+        data: data,
     });
 
     return {

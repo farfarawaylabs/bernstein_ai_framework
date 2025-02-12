@@ -5,6 +5,8 @@ CREATE TABLE "public"."tasks" (
     "type" "text" NOT NULL DEFAULT 'generic',
     "status" "text" NOT NULL DEFAULT 'pending',
     "run_duration" bigint NOT NULL DEFAULT 0,
+    "title" "text",
+    "data" jsonb,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 

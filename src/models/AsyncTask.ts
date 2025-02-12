@@ -4,6 +4,7 @@ export interface AsyncTask {
     type: TASK_TYPES;
     taskId: string;
     userId: string;
+    title: string;
     data: {
         email: string;
         topic: string;
