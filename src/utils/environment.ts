@@ -12,6 +12,7 @@ export default class Environment {
 	static SUPABASE_URL: string;
 	static SUPABASE_PRIVATE_KEY: string;
 	static ANTHROPIC_API_KEY: string;
+	static FEEDBACK_EMAIL: string;
 	static userId: string;
 	static CONTENT_GENERATION_QUEUE: Queue<any>;
 }
@@ -29,4 +30,5 @@ export function initializeEnvironment(env: Env) {
 	Environment.SUPABASE_PRIVATE_KEY = env.SUPABASE_PRIVATE_KEY;
 	Environment.userId = env.userId;
 	Environment.CONTENT_GENERATION_QUEUE = env.CONTENT_GENERATION_QUEUE;
+	Environment.FEEDBACK_EMAIL = env.FEEDBACK_EMAIL;
 }

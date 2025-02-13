@@ -19,6 +19,16 @@ import { updateTask } from "./dl/tasks/updateTask";
 import { BlogPostWriterAgent } from "./agents/writing/blogs/blogPostWriterAgent";
 import WrittenContentEditorAgent from "./agents/writing/generic/WrittenContentEditorAgent";
 import ResearchReportAgent from "./agents/writing/researchReports/ResearchReportAgent";
+import { Operator } from "./framework/operators";
+import { Conductor } from "./framework/conductor";
+import { getTask } from "./dl/tasks/getTask";
+import { updateTaskStatus } from "./dl/tasks/updateTaskSTatus";
+import {
+    getResearchToolsPackage,
+    getWritingToolsPackage,
+} from "./framework/tools/toolPackages";
+import { createResearchSectionWriterTool } from "./framework/tools/writing/research/researchSectionWriterTool";
+import { SupabaseOperator } from "./operators/SupabaseOperator";
 
 const app = new Hono();
 
@@ -46,6 +56,10 @@ export default {
             switch (task.type) {
                 case "generate_content":
                     await generateContent(task.data);
+                    break;
+
+                case "revise_content":
+                    await reviseContent(task.data.userId, task.data);
                     break;
 
                 default:
@@ -106,6 +120,33 @@ function getAgentForTask(task: AsyncTask) {
     }
 }
 
+const getToolsForTaskType = (task: AsyncTask) => {
+    switch (task.type) {
+        case TASK_TYPES.ARTICLE:
+            return { ...getResearchToolsPackage() };
+
+        case TASK_TYPES.BLOG_POST:
+            return { ...getResearchToolsPackage() };
+
+        case TASK_TYPES.RESEARCH_REPORT:
+            return {
+                research_section_writer_agent: createResearchSectionWriterTool(
+                    AI_MODELS.CHATGPT4O,
+                    task.taskId,
+                ),
+            };
+
+        default:
+            return {
+                ...getResearchToolsPackage(),
+                ...getWritingToolsPackage(
+                    AI_MODELS.CHATGPT4O,
+                    task.taskId,
+                ),
+            };
+    }
+};
+
 async function generateContent(task: AsyncTask) {
     const agent = getAgentForTask(task);
 
@@ -125,5 +166,40 @@ async function generateContent(task: AsyncTask) {
         Math.round(durationInSeconds),
         TASK_STATUS.COMPLETED,
         response.conversationId,
+    );
+}
+
+async function reviseContent(userId: string, task: AsyncTask) {
+    const taskData = await getTask(task.taskId);
+
+    await updateTaskStatus(
+        task.taskId,
+        TASK_STATUS.IN_PROGRESS,
+    );
+
+    const operator = new SupabaseOperator({
+        taskId: task.taskId,
+        tools: getToolsForTaskType(task),
+    });
+
+    const conductor = new Conductor({
+        operator: operator,
+        defaultModel: AI_MODELS.CHATGPT4O,
+        stateSerializer: new SupabaseSerializer(
+            userId,
+        ),
+        conversationId: taskData.conversation_id!,
+    });
+    await conductor.conduct();
+
+    await sendContentReadyEmail(
+        task.data.email,
+        task.data.topic,
+        task.taskId,
+    );
+
+    await updateTaskStatus(
+        task.taskId,
+        TASK_STATUS.COMPLETED,
     );
 }

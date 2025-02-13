@@ -24,7 +24,7 @@ const askUserToolSchema: StructuredToolParams = {
 const askUserTool = tool(async (input: any) => {
 	const { question } = input;
 	const result = await sendEmail({
-		from: "shahar@farfarawaylabs.com",
+		from: "content@t.bernsteinai.com",
 		fromName: "Bernstein AI",
 		recipients: ["test@test.com"],
 		subject: "Test",

@@ -114,7 +114,10 @@ const researchReportPrompt =
 	•	Include a Citations section at the end, listing all sources and references used by all the writer agents.
 	•	Make sure the report is in valid markdown format with no additional text, \n, or other formatting.
 
-6.	No Additional User Queries:
+6.  User
+	•	If at any point the user provides feedback on your output or ask for any revisions, you should go again through the process - asses if you need to do any additional research, before making the changes requested by the user.
+
+7.	No Additional User Queries:
 	•	Once you’ve compiled the final report in Markdown, return it to the user as your answer.
 	•	Do not ask the user for further input or clarification.
 

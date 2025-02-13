@@ -12,5 +12,6 @@ export interface Env {
 	SERPER_DEV_API_KEY: string;
 	SUPABASE_URL: string;
 	SUPABASE_PRIVATE_KEY: string;
+	FEEDBACK_EMAIL: string;
 	userId: string;
 }

@@ -38,5 +38,6 @@ export async function getContentByTaskId(
             ? conversation.serializeState()
             : undefined,
         toolCallsHistory: toolCalls,
+        ownerId: task.user_id,
     };
 }

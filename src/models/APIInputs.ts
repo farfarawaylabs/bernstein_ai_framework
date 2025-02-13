@@ -24,3 +24,11 @@ export interface GetContentByTaskInput {
 	getToolCallsHistory: boolean;
 	includeRawConversation: boolean;
 }
+
+export interface ReviseTaskInput {
+	instructions: string;
+}
+
+export interface FeedbackTaskInput {
+	feedback: boolean;
+}

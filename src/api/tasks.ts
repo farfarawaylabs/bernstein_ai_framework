@@ -2,16 +2,20 @@ import { Hono } from "hono";
 import Environment from "@/utils/environment";
 import { generateCustomWritingTask } from "@/bl/tasks/generateGenericWritingTask";
 import {
+	FeedbackTaskInput,
 	GenerateArticleInput,
 	GenerateBlogPostInput,
 	GenerateGenericWritingInput,
 	GenerateResearchReportInput,
+	ReviseTaskInput,
 } from "@/models/APIInputs";
 import { generateResearchReportTask } from "@/bl/tasks/generateResearchReportTask";
 import { generateBlogPostTask } from "@/bl/tasks/generateBlogPostTask";
 import { generateArticleTask } from "@/bl/tasks/generateArticleTask";
 import { TONE_OF_VOICE } from "@/models/enums";
+import { reviseTask } from "@/bl/tasks/reviseTask";
 import { deleteTask } from "@/bl/tasks/deleteTask";
+import { giveFeedback } from "@/bl/tasks/giveFeedbak";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -73,6 +77,26 @@ app.post("/generateCustomWriting", async (c) => {
 app.delete("/:id", async (c) => {
 	const id = c.req.param("id");
 	await deleteTask(Environment.userId, id);
+	return c.json({ success: true });
+});
+
+app.post("/:id/revise", async (c) => {
+	const id = c.req.param("id");
+	const body: ReviseTaskInput = await c.req.json();
+	const { instructions } = body;
+
+	await reviseTask(Environment.userId, id, instructions);
+
+	return c.json({ success: true });
+});
+
+app.post("/:id/feedback", async (c) => {
+	const id = c.req.param("id");
+	const body: FeedbackTaskInput = await c.req.json();
+	const { feedback } = body;
+
+	await giveFeedback(Environment.userId, id, feedback);
+
 	return c.json({ success: true });
 });
 

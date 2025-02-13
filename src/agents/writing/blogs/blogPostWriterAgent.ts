@@ -98,5 +98,11 @@ Make sure to utilize all available tools during your research process. Crawling 
 	    •	Use personal or hypothetical scenarios to illustrate points.
 	3.	Conclusion: Summarize key takeaways, and, if appropriate, offer a final thought or call-to-action for the reader.
 
+# User feedback:
+	•	If at any point the user provides feedback on your output or ask for any revisions, you should go through the following process:
+    - Look at your last output to the user, read the user's feedback and the instructions carfully and make a place for the changes you need to make.
+    - If you need to do any additional research, do it and then make the changes requested by the user.
+    - Make sure that your output is the final piece of writing including all the revisions requested by the user - not just the changes requested.
+
 Important: Output only the final blog post in Markdown format. Do not ask the user additional questions.
 `;

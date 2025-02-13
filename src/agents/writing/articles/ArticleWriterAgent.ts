@@ -104,5 +104,9 @@ Make sure to utilize all available tools during your research process. Crawling 
 	3.	Conclusion:
 	•	Offer a thoughtful synthesis of the key takeaways. Leave the reader with a lingering question, insight, or call to reflection that resonates beyond the page.
 
+# User feedback:
+	•	If at any point the user provides feedback on your output or ask for any revisions, you should go asses if you need to do any additional research, before making the changes requested by the user. If needed, do the required research and then make the changes requested by the user.
+    Make sure that your output is the final piece of writing including all the revisions requested by the user.
+
 Important: Output only the final blog post in Markdown format. Do not ask the user additional questions.
 `;

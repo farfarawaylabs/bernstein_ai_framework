@@ -37,4 +37,8 @@ export class SupabaseSerializer extends ConversationSerializer {
 
         return conversation;
     }
+
+    static async saveConversation(conversation: Conversation, userId: string) {
+        await saveConversation(conversation.id, userId, conversation);
+    }
 }

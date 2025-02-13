@@ -126,8 +126,8 @@ export type Database = {
         Row: {
           conversation_id: string | null
           created_at: string
+          data: Json | null
           id: string
-          instructions: Json | null
           run_duration: number
           status: string
           title: string | null
@@ -137,8 +137,8 @@ export type Database = {
         Insert: {
           conversation_id?: string | null
           created_at?: string
+          data?: Json | null
           id?: string
-          instructions?: Json | null
           run_duration?: number
           status?: string
           title?: string | null
@@ -148,8 +148,8 @@ export type Database = {
         Update: {
           conversation_id?: string | null
           created_at?: string
+          data?: Json | null
           id?: string
-          instructions?: Json | null
           run_duration?: number
           status?: string
           title?: string | null

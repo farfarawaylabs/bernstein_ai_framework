@@ -7,3 +7,10 @@ export async function sendTaskToQueue(task: AsyncTask) {
         data: task,
     });
 }
+
+export async function sendReviseTaskToQueue(task: AsyncTask) {
+    await Environment.CONTENT_GENERATION_QUEUE.send({
+        type: "revise_content",
+        data: task,
+    });
+}
